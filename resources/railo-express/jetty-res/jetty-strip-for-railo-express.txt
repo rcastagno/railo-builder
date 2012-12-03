@@ -1,0 +1,23 @@
+steps I took to strip Jetty 8.1.7 for Railo Express build template	// Igal
+
+current version: jetty-8.1.7.v20120910
+
+	removed
+- contexts-available/
+- contexts/javadoc.xml      
+- contexts/test.d/override-web.xml      
+- contexts/test.xml      
+- javadoc/
+
+	added
++ contexts/railo.xml       
++ start       
++ start.bat       
++ stop       
++ stop.bat       
+
+	modified 3 files
+* etc/jetty.xml   
+* etc/webdefault.xml   
+* start.ini   
+

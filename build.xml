@@ -1,0 +1,33 @@
+<project name="RailoBuilder" basedir="." default="jar">
+	
+	<!-- Load properties -->
+	<property file="build.properties" />
+	
+	<target name="jar">
+		<!--mkdir dir="${build.dir}" /!-->
+		
+		<echo>cleaning up...</echo>
+		<delete dir="${build.dir}" />
+		
+		<echo>copying ${build.dir} to build folder...</echo>
+		<copy todir="${build.dir}">
+			<fileset dir="${rsrc.war}"/>
+		</copy>
+		
+		<echo>copying lib/* to build folder...</echo>
+		<copy todir="${build.dir}/WEB-INF/railo/lib/">
+			<fileset dir="lib"/>
+		</copy>
+		
+		<echo>building bin/*.class to railo-builder.jar</echo>
+		<jar destfile="${build.dir}/WEB-INF/railo/lib/railo-build.jar" basedir="bin" />
+		
+		<echo>building zip archive</echo>
+		<zip destfile="${dist.war}" basedir="${build.dir}" />
+		
+		<echo>cleaning up...</echo>
+		<delete dir="${build.dir}" />
+				
+	</target>
+	
+</project>

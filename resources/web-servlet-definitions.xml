@@ -1,0 +1,120 @@
+  
+  <!-- ********************************************************************* -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- Railo Servlet Definitions (Servlet Spec. Version 2.5 or greater req.) -->
+  
+
+  <!-- ===================================================================== -->
+  <!-- Railo CFML Servlet - this is the main Railo servlet                   -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <servlet id="Railo">
+    <servlet-name>CFMLServlet</servlet-name>
+    <description>Railo CFML Engine</description>
+    <servlet-class>railo.loader.servlet.CFMLServlet</servlet-class>    
+    <init-param>
+      <param-name>railo-server-root</param-name>
+      <param-value>lib/railo</param-value>
+      <description>Railo Server configuration directory (for Server-wide configurations and libs)</description>
+    </init-param>
+    <init-param>
+      <param-name>railo-web-directory</param-name>
+      <param-value>{web-root-directory}/WEB-INF/railo/</param-value>
+      <description>Railo Web Directory (for Website-specific configurations and libs)</description>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>CFMLServlet</servlet-name>
+    <url-pattern>*.cfc</url-pattern>
+    <url-pattern>*.cfm</url-pattern>
+    <url-pattern>*.cfml</url-pattern>   
+    <url-pattern>/index.cfc/*</url-pattern>
+    <url-pattern>/index.cfm/*</url-pattern>
+    
+    <!-- url-pattern>*.cfm/*</url-pattern !-->
+    <!-- url-pattern>*.cfml/*</url-pattern !-->
+    <!-- url-pattern>*.cfc/*</url-pattern !-->
+    <!-- url-pattern>*.htm</url-pattern !-->
+    <!-- url-pattern>*.jsp</url-pattern !-->
+  </servlet-mapping>
+  
+
+  <!-- ===================================================================== -->
+  <!-- Railo REST Servlet - handles Railo's RESTful web services             -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <servlet id="RESTServlet">
+    <servlet-name>RESTServlet</servlet-name>
+    <description>Servlet to access RESTful services</description>
+    <servlet-class>railo.loader.servlet.RestServlet</servlet-class>
+    <init-param>
+      <param-name>railo-web-directory</param-name> 
+      <param-value>{web-root-directory}/WEB-INF/railo/</param-value> 
+      <description>Railo Web Directory</description> 
+    </init-param> 
+    <!-- init-param>
+      <param-name>railo-server-directory</param-name>
+      <param-value>./</param-value>
+      <description>directory where railo root directory is stored</description>
+    </init-param !-->
+    <load-on-startup>1</load-on-startup>
+  </servlet>  
+
+  <servlet-mapping>
+    <servlet-name>RESTServlet</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+
+
+  <!-- ===================================================================== -->
+  <!-- Railo MessageBroker Servlet - Flex Gateway                            -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- * ATTENTION - ATENCION - ACHTUNG  -  ATTENTION - ATENCION - ACHTUNG * -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- messageBrokerId must be unique for each defintion of the MessageBroker-->
+  <!-- Servlet.  if you use the MessageBroker Servlet and define it in more  -->
+  <!-- than one xml file, you must uncomment the messageBrokerId init-param  -->
+  <!-- and set a different value in each definition.                         -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <servlet id="MessageBrokerServlet">
+    <servlet-name>MessageBrokerServlet</servlet-name>
+    <display-name>MessageBrokerServlet</display-name>
+    <servlet-class>flex.messaging.MessageBrokerServlet</servlet-class>
+    <init-param>
+      <param-name>services.configuration.file</param-name>
+      <param-value>/WEB-INF/flex/services-config.xml</param-value>
+    </init-param>
+    <!--init-param>
+      <param-name>messageBrokerId</param-name>
+      <param-value>_default_</param-value>
+    </init-param!-->
+    <!--load-on-startup>2</load-on-startup!-->
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>MessageBrokerServlet</servlet-name>
+    <url-pattern>/flex2gateway/*</url-pattern>
+    <url-pattern>/flashservices/gateway/*</url-pattern>
+    <url-pattern>/messagebroker/*</url-pattern>
+  </servlet-mapping>
+
+
+  <!-- ===================================================================== -->
+  <!-- Railo AMF Servlet - Flash Gateway                                     -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <servlet id="AMFServlet">
+    <servlet-name>AMFServlet</servlet-name>
+    <description>AMF servlet for flash remoting</description>
+    <servlet-class>railo.loader.servlet.AMFServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>AMFServlet</servlet-name>
+    <url-pattern>/openamf/gateway/*</url-pattern>
+  </servlet-mapping>
+
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!--                                                 Railo Definitions End -->  
+  <!-- ===================================================================== -->
+  <!-- _____________________________________________________________________ -->
