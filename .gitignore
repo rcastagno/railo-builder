@@ -1,3 +1,5 @@
+dist/*
+
 railo-java/railo/build
 railo-java/railo-core/bin
 railo-java/railo-core/bin/*
