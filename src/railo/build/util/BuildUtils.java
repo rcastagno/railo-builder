@@ -21,12 +21,12 @@ public class BuildUtils {
 		ResourceProvider frp = ResourcesImpl.getFileResourceProvider();
 
 		Resource rSrc = frp.getResource( src );
-    	Resource rDst = frp.getResource( dst );
-    	
-    	if ( filter != null )
-    		ResourceUtil.copyRecursive( rSrc, rDst, filter );
-    	else
-    		ResourceUtil.copyRecursive( rSrc, rDst );
+		Resource rDst = frp.getResource( dst );
+		
+		if ( filter != null )
+			ResourceUtil.copyRecursive( rSrc, rDst, filter );
+		else
+			ResourceUtil.copyRecursive( rSrc, rDst );
 	}
 	
 	
