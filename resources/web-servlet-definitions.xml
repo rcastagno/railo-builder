@@ -10,17 +10,31 @@
   <servlet id="Railo">
     <servlet-name>CFMLServlet</servlet-name>
     <description>Railo CFML Engine</description>
-    <servlet-class>railo.loader.servlet.CFMLServlet</servlet-class>    
-    <!-- init-param>
+    <servlet-class>railo.loader.servlet.CFMLServlet</servlet-class>
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- to specify the location of the Railo Server config and libraries,   -->
+    <!-- uncomment the init-param below.  make sure that the param-value     -->
+    <!-- points to a valid folder, and that the process that runs Railo has  -->
+    <!-- write permissions to that folder.  leave commented for defaults.    -->
+    <!--
+    <init-param>
       <param-name>railo-server-root</param-name>
-      <param-value>lib/railo</param-value>
+      <param-value>/var/Railo/config/server/</param-value>
       <description>Railo Server configuration directory (for Server-wide configurations and libs)</description>
-    </init-param !-->
-    <!-- init-param>
+    </init-param>
+    !-->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- to specify the location of the Web Contexts' config and libraries,  -->
+    <!-- uncomment the init-param below.  make sure that the param-value     -->
+    <!-- points to a valid folder, and that the process that runs Railo has  -->
+    <!-- write permissions to that folder.  leave commented for defaults.    -->
+    <!--
+    <init-param>
       <param-name>railo-web-directory</param-name>
-      <param-value>{web-root-directory}/WEB-INF/railo/</param-value>
+      <param-value>/var/Railo/config/web/{web-context-label}/</param-value> 
       <description>Railo Web Directory (for Website-specific configurations and libs)</description>
-    </init-param !-->
+    </init-param>
+    !-->
     <load-on-startup>1</load-on-startup>
   </servlet>
   
