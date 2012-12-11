@@ -560,6 +560,26 @@ component {
 
 
 	/** copies directories recursively */
+	function copyResources_new( string src, string dst, string excludeSuffixes='' ) {
+
+		_echo( "Copy #toDisplayDir( src )# to #toDisplayDir( dst )#" );
+		
+		/*/
+		var utils	= createObject( 'java', 'railo.build.util.BuildUtils' );
+
+		var filter 	= utils.createPrefixResourceFilter( ".*", true );			// exclude anything that starts with a dot, e.g. .svn
+
+		if ( len( excludeSuffixes ) )
+			filter 	= utils.createSuffixResourceFilter( excludeSuffixes, true, filter );
+		
+		utils.copyDirectoryTree( src, dst, filter );
+		//*/
+
+		directory action="copy" directory=src destination=dst filter=excludeSuffixes;
+	}
+
+
+	/** copies directories recursively */
 	function copyResources( string src, string dst, string excludeSuffixes='' ) {
 
 		_echo( "Copy #toDisplayDir( src )# to #toDisplayDir( dst )#" );
