@@ -20,19 +20,20 @@
     <init-param>
       <param-name>railo-server-root</param-name>
       <param-value>/var/Railo/config/server/</param-value>
-      <description>Railo Server configuration directory (for Server-wide configurations and libs)</description>
+      <description>Railo Server configuration directory (for Server-wide configurations, settings, and libraries)</description>
     </init-param>
     !-->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- to specify the location of the Web Contexts' config and libraries,  -->
     <!-- uncomment the init-param below.  make sure that the param-value     -->
     <!-- points to a valid folder, and that the process that runs Railo has  -->
-    <!-- write permissions to that folder.  leave commented for defaults.    -->
+    <!-- write permissions to that folder.  the {web-context-label} can be   -->
+    <!-- set in Railo Server Admin homepage.  leave commented for defaults.  -->
     <!--
     <init-param>
       <param-name>railo-web-directory</param-name>
       <param-value>/var/Railo/config/web/{web-context-label}/</param-value> 
-      <description>Railo Web Directory (for Website-specific configurations and libs)</description>
+      <description>Railo Web Directory (for Website-specific configurations, settings, and libraries)</description>
     </init-param>
     !-->
     <load-on-startup>1</load-on-startup>
@@ -62,17 +63,7 @@
     <servlet-name>RESTServlet</servlet-name>
     <description>Servlet to access RESTful services</description>
     <servlet-class>railo.loader.servlet.RestServlet</servlet-class>
-    <!-- init-param>
-      <param-name>railo-web-directory</param-name> 
-      <param-value>{web-root-directory}/WEB-INF/railo/</param-value> 
-      <description>Railo Web Directory</description> 
-    </init-param !--> 
-    <!-- init-param>
-      <param-name>railo-server-directory</param-name>
-      <param-value>./</param-value>
-      <description>directory where railo root directory is stored</description>
-    </init-param !-->
-    <load-on-startup>1</load-on-startup>
+    <load-on-startup>2</load-on-startup>
   </servlet>  
 
   <servlet-mapping>
