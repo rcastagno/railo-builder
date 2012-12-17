@@ -563,6 +563,7 @@ component {
 	function copyResources_new( string src, string dst, string excludeSuffixes='' ) {
 
 		_echo( "Copy #toDisplayDir( src )# to #toDisplayDir( dst )#" );
+		_echo( "*** directory action=copy excludeSuffixes=#excludeSuffixes# ***" );
 		
 		/*/
 		var utils	= createObject( 'java', 'railo.build.util.BuildUtils' );
@@ -575,7 +576,13 @@ component {
 		utils.copyDirectoryTree( src, dst, filter );
 		//*/
 
-		directory action="copy" directory=src destination=dst filter=excludeSuffixes;
+		if ( len( excludeSuffixes ) ) {
+
+			directory action="copy" directory=src destination=dst filter="!#excludeSuffixes#";
+		} else {
+
+			directory action="copy" directory=src destination=dst;
+		}
 	}
 
 
