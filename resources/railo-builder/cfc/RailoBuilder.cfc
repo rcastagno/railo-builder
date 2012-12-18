@@ -541,6 +541,9 @@ component {
 				append=false remoteClients="";
 
 
+			zip action="zip" file="#dirs.tmpRA#/resource/context/railo-context.ra" source=dirs.admin filter="!*.ra";
+
+
 			copyResources( "#dirs.admin#/admin/dbdriver", "#dirs.tmpRA#/resource/context/admin/dbdriver" );
 			
 			copyResources( "#dirs.admin#/admin/plugin",   "#dirs.tmpRA#/resource/context/admin/plugin" );
