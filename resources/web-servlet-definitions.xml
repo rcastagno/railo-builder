@@ -8,8 +8,8 @@
   <!-- Railo CFML Servlet - this is the main Railo servlet                   -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <servlet id="Railo">
-    <servlet-name>CFMLServlet</servlet-name>
     <description>Railo CFML Engine</description>
+    <servlet-name>CFMLServlet</servlet-name>    
     <servlet-class>railo.loader.servlet.CFMLServlet</servlet-class>
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- to specify the location of the Railo Server config and libraries,   -->
@@ -60,8 +60,8 @@
   <!-- Railo REST Servlet - handles Railo's RESTful web services             -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <servlet id="RESTServlet">
-    <servlet-name>RESTServlet</servlet-name>
-    <description>Servlet to access RESTful services</description>
+    <description>Railo Servlet for RESTful services</description>
+    <servlet-name>RESTServlet</servlet-name>    
     <servlet-class>railo.loader.servlet.RestServlet</servlet-class>
     <load-on-startup>2</load-on-startup>
   </servlet>  
@@ -83,6 +83,7 @@
   <!-- and set a different value in each definition.                         -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <servlet id="MessageBrokerServlet">
+    <description>Railo Servlet for Flex Gateway</description>
     <servlet-name>MessageBrokerServlet</servlet-name>
     <display-name>MessageBrokerServlet</display-name>
     <servlet-class>flex.messaging.MessageBrokerServlet</servlet-class>
