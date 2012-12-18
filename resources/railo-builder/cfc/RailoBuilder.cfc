@@ -541,15 +541,9 @@ component {
 				append=false remoteClients="";
 
 
-			_echo( "Adding sources from #dirs.admin# to railo-context.ra" );
-			zip action="zip" file="#dirs.tmpRA#/resource/context/railo-context.ra" source=dirs.admin filter="!*.ra";
-
-
-			copyResources( "#dirs.admin#/admin/dbdriver", "#dirs.tmpRA#/resource/context/admin/dbdriver" );
+			copyResources( "#dirs.admin#/admin",     "#dirs.tmpRA#/resource/context/admin" );
 			
-			copyResources( "#dirs.admin#/admin/plugin",   "#dirs.tmpRA#/resource/context/admin/plugin" );
-			
-			copyResources( "#dirs.admin#/templates",      "#dirs.tmpRA#/resource/context/templates" );
+			copyResources( "#dirs.admin#/templates", "#dirs.tmpRA#/resource/context/templates" );
 			
 			_echo( "Built railo-context.ra to <b>#dirs.tmpRA#/railo-context.ra</b>" );
 			
