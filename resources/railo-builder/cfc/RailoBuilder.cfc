@@ -541,6 +541,7 @@ component {
 				append=false remoteClients="";
 
 
+			// add RA sources
 			zip action="zip" file="#dirs.tmpRA#/resource/context/railo-context.ra" source=dirs.admin filter="!*.ra";
 
 
