@@ -119,6 +119,15 @@
 
 	$( function() {
 
+		
+		isResDirRequired = $( 'input:radio:checked[name=build]' ).val() == "all";
+
+
+		$( '#srcDir, #resDir' ).change( function(){ 
+
+			validateDirs();
+		} );
+
 		$( '#srcDir, #resDir' ).keyup( function(){ 
 
 			validateDirs();
@@ -127,18 +136,7 @@
 
 		$( 'input:radio[name=build]' ).change( function() {
 
-			var selected = $( 'input:radio:checked[name=build]' ).val();
-
-			switch ( selected ) {
-
-				case "all":		// TODO: check resources folder
-					isResDirRequired = true;
-					break;
-
-				default:
-					isResDirRequired = false;
-					break;
-			}
+			isResDirRequired = $( 'input:radio:checked[name=build]' ).val() == "all";
 
 			validateDirs();
 		} );
