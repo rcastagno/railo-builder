@@ -229,10 +229,8 @@ component {
 			
 			copyResources( dirs.core, dirs.tmpCoreSrc );
 			
-			if ( !excludeRa )
-				copyResources( dirs.tmpRA, dirs.tmpCoreSrc );
 			
-			var compileLog = javaCompiler.Compile( dirs.tmpCoreSrc, dirs.tmpCoreBin, this.settings.compilerArgs );
+			var compileLog = javaCompiler.Compile( dirs.tmpCoreSrc, dirs.tmpCoreBin, this.settings.compilerArgs & " -sourcepath #dirs.loader#[-d none]" );
 			
 			if ( find( "ERROR", compileLog ) || find( "java.lang.NullPointerException", compileLog ) ) {
 
@@ -246,6 +244,13 @@ component {
 			_echo( "Copy resources from #toDisplayDir( dirs.core )#" );
 			
 			copyResources( dirs.core, dirs.tmpCoreBin, '*.java,*.rc' );
+
+
+			if ( !excludeRa ) {
+
+				copyResources( dirs.tmpRA, dirs.tmpCoreBin );
+			}
+
 
 			_echo( "Package #toDisplayDir( dirs.tmpCoreBin )#" );
 			
@@ -530,19 +535,17 @@ component {
 				archive="" remoteClients="";
 
 			admin action="createArchive" type="web" password=this.settings.password
-				virtual="/railo-context-compiled"
+				virtual=tempVirtualDir
 				file="#dirs.tmpRA#/resource/context/railo-context.ra"
 				secure=true
-				append=false
-				remoteClients="";
+				append=false remoteClients="";
 
 
 			copyResources( "#dirs.admin#/admin/dbdriver", "#dirs.tmpRA#/resource/context/admin/dbdriver" );
 			
 			copyResources( "#dirs.admin#/admin/plugin",   "#dirs.tmpRA#/resource/context/admin/plugin" );
 			
-			copyResources( "#dirs.admin#/templates",      "#dirs.tmpRA#/resource/context/templates" );			
-
+			copyResources( "#dirs.admin#/templates",      "#dirs.tmpRA#/resource/context/templates" );
 			
 			_echo( "Built railo-context.ra to <b>#dirs.tmpRA#/railo-context.ra</b>" );
 			
