@@ -33,9 +33,6 @@ component {
 		if ( !len( this.settings.dstDir ) )
 			throw( type="InvalidArgument", message="the required arg settings.dstDir was not passed" );
 
-		if ( !directoryExists( this.settings.dstDir ) )
-			directoryCreate( this.settings.dstDir, true );
-
 		if ( !len( this.settings.srcDir ) || !directoryExists( this.settings.srcDir & "/railo-cfml" ) || !directoryExists( this.settings.srcDir & "/railo-java" ) )
 			throw( type="InvalidArgument", message="the required arg settings.srcDir was not passed or does not point to the Railo source directory" );
 
@@ -103,7 +100,8 @@ component {
 			}
 		}
 
-		javaCompiler = createObject( 'java', this.settings.compilerType );
+//		javaCompiler = createObject( 'java', this.settings.compilerType );
+		javaCompiler = new JdtCompiler();
 
 		if ( this.settings.compilerArgs NCT "-extdirs" )
 			this.settings.compilerArgs &= ' -extdirs "#dirs.lib##server.separator.path##expandPath( "/WEB-INF/railo/lib/compile" )#"';
