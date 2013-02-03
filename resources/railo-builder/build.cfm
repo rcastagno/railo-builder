@@ -18,7 +18,7 @@
 				<br/>
 				<div class="label">Destination Directory:</div>
 				<div><input type="text" id="dstDir" name="dstDir" value="#cookie.rb_dstDir#" class="path"></div>
-				<div class="hint">directory in which to save the built files</div><br/>
+				<div class="hint">directory where to save the built files; e.g. C:/build/railo-{version}</div><br/>
 				<div class="label">Resources Directory:</div>
 				<div><input type="text" id="resDir" name="resDir" value="#cookie.rb_resDir#" class="path"></div>
 				<div class="hint">directory with resources for WAR, Express, and other distros</div>
