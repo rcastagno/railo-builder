@@ -31,3 +31,6 @@
 
 
 <cfset railoBuilder.Build()>
+
+
+<cfinclude template="footer.cfml">

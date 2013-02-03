@@ -140,6 +140,8 @@
 
 			validateDirs();
 		} );
+
+		validateDirs();
 	} );
 </cfsavecontent>
 

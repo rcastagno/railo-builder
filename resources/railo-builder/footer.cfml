@@ -5,7 +5,7 @@
 			<div style="margin:2.5em 1.25em;">
 				<p><a href="/">Build</a> &middot; <a href="/compare.cfm">Compare</a>
 
-				<p>Railo #server.railo.version# running in #server.servlet.name# from #getDirectoryFromPath( cgi.cf_template_path )#</div>
+				<p>Railo #Server.railo.version# running in #Server.servlet.name# from #getDirectoryFromPath( CGI.CF_TEMPLATE_PATH )#</div>
 			
 			<!--- #getRequestUrl()# !--->
 		</cfoutput>
