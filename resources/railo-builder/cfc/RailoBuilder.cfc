@@ -11,6 +11,7 @@ component {
 		, dstDir		= ''
 		, srcDir		= ''
 		, resDir 		= ''
+		, isDebug 		= true
 	}
 
 
@@ -235,7 +236,8 @@ component {
 				throw( type="CompilationError", message="Compilation Error(s) encountered. <pre>#compileLog#</pre>" );
 			}
 
-//			_echo( "<pre>#compileLog#</pre>" );
+			if ( this.Settings.isDebug )
+				_echo( "<pre>#trim( compileLog )#</pre>" );
 
 			_echo( "Compiled Railo Core version to #toDisplayDir( dirs.tmpCoreBin )#" );
 			
@@ -525,15 +527,13 @@ component {
 
 		try {
 		
-			admin action="updateMapping" type="web" password=this.settings.password
-				virtual=tempVirtualDir
+			admin action="updateMapping" type="web" virtual=tempVirtualDir password=this.settings.password
 				physical="#dirs.admin#"
 				primary="physical" 
 				trusted=false
 				archive="" remoteClients="";
 
-			admin action="createArchive" type="web" password=this.settings.password
-				virtual=tempVirtualDir
+			admin action="createArchive" type="web" virtual=tempVirtualDir password=this.settings.password
 				file="#dirs.tmpRA#/resource/context/railo-context.ra"
 				secure=true
 				append=false remoteClients="";
@@ -558,31 +558,44 @@ component {
 	}
 
 
-	/** copies directories recursively */
-	function copyResources_new( string src, string dst, string excludeSuffixes='' ) {
 
-		_echo( "Copy #toDisplayDir( src )# to #toDisplayDir( dst )#" );
-		_echo( "*** directory action=copy excludeSuffixes=#excludeSuffixes# ***" );
-		
-		/*/
-		var utils	= createObject( 'java', 'railo.build.util.BuildUtils' );
+	/** 
+	* performs a recursive copy and allows to use a UDF as a filter that determines whether a file/dir 
+	* should be copied or not.
+	* 
+	* it returns an array of strings, one for each file that was copied.
+	* 
+	* @srcDir - full path of source dir
+	* @dstDir - full path of destination dir
+	* @filter - a function with the following signature: boolean function( name, type ); type can be 'dir' or 'file'
+	* @arrLog - used as reference object when calling recursively. do not pass a value.
+	*/
+	function dirCopy( required srcDir, required dstDir, filter="", arrLog=[] ) {
 
-		var filter 	= utils.createPrefixResourceFilter( ".*", true );			// exclude anything that starts with a dot, e.g. .svn
+		var qContents = directoryList( srcDir, false, "query", "", "type desc, name" );		// breadth first
 
-		if ( len( excludeSuffixes ) )
-			filter 	= utils.createSuffixResourceFilter( excludeSuffixes, true, filter );
-		
-		utils.copyDirectoryTree( src, dst, filter );
-		//*/
+		if ( !directoryExists( dstDir ) ) 
+			directoryCreate( dstDir, true );
 
-		if ( len( excludeSuffixes ) ) {
+		loop query=qContents {
 
-			directory action="copy" directory=src destination=dst filter="!#excludeSuffixes#";
-		} else {
+			if ( isSimpleValue( filter ) || filter( name, type ) ) {
 
-			directory action="copy" directory=src destination=dst;
+				if ( type == 'file' ) {
+
+					fileCopy( srcDir & '/' & name, dstDir & '/' & name );
+
+					arrLog.append( "copied #srcDir#/#name# to #dstDir#/#name#" );
+				} else if ( type == 'dir' ) {
+
+					dirCopy( srcDir & '/' & name, dstDir & '/' & name, filter, arrLog );	// recurse
+				}
+			}
 		}
+
+		return arrLog;
 	}
+
 
 
 	/** copies directories recursively */
