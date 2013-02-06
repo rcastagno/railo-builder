@@ -110,7 +110,7 @@ Path placeholders:
 			for example when you define physical you can partiquel overwrite the archive.
 		-->
 		<mapping archive="{railo-web}/context/railo-context.ra" physical="{railo-web}/context/" primary="physical" readonly="yes" toplevel="yes" trusted="true" virtual="/railo-context/"/>
-	<mapping physical="F:/Workspace/git/igal-getrailo/railo-cfml/railo-admin/" primary="physical" toplevel="true" trusted="false" virtual="/context"/><mapping physical="F:\workspace\git\igal-getrailo\railo-cfml\railo-admin" primary="physical" toplevel="true" trusted="false" virtual="/railo-context-compiled"/></mappings>	
+	<mapping physical="F:/Workspace/git/igal-getrailo/railo-cfml/railo-admin" primary="physical" toplevel="true" trusted="false" virtual="/railo-context-compiled"/></mappings>	
 	
 	<custom-tag>
 		<mapping physical="{railo-web}/customtags/" trusted="yes"/>
