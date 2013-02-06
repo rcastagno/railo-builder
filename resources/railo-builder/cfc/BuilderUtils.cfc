@@ -90,7 +90,7 @@ component {
 	}
 
 
-	function CalcFileHash( required String filename, boolean createFile=false, String algorithm="md5", boolean isBinary=true ) {
+	function CalcFileHash( required String filename, boolean createFile=false, boolean isBinary=true, String algorithm="md5" ) {
 
 		var contents = 0;
 
