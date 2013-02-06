@@ -11,6 +11,9 @@ component {
 		, dstDir		= ''
 		, srcDir		= ''
 		, resDir 		= ''
+
+		, jreVersion	= 'jre-1.6.0_39'
+
 		, isDebug 		= true
 	}
 
@@ -259,6 +262,7 @@ component {
 			var fileInfo = getFileInfo( paths.core );
 			
 			_echo( "Built core.rc to <b>#paths.core#</b> (#numberFormat( fileInfo.size / 1048576, '9.99' )#mb)" );
+
 			
 		} catch ( any ex ) {
 		
@@ -303,7 +307,6 @@ component {
 		_echo( "Built Express Tomcat distro at <b>#dirs.dst#/#expressName#.tar.gz</b>" );
 
 	}
-	
 	
 
 
@@ -366,7 +369,7 @@ component {
 
 			deleteDirectory( tmpExpressJreDir );					// delete jre if exists from previous iteration
 
-			var resJreArchive = dirs.rsrcJRE & '/jre-1.6.0_37-#lcase( jreDistro )#.zip';
+			var resJreArchive = dirs.rsrcJRE & '/#this.settings.jreVersion#-#lcase( jreDistro )#.zip';
 
 			_echo( "Exctacting #resJreArchive#" );					
 
@@ -527,24 +530,24 @@ component {
 
 		try {
 		
-			admin action="updateMapping" type="web" virtual=tempVirtualDir password=this.settings.password
+			admin action="updateMapping" type="web" password=this.settings.password virtual=tempVirtualDir
 				physical="#dirs.admin#"
 				primary="physical" 
 				trusted=false
-				archive="" remoteClients="";
+				archive="";
 
-			admin action="createArchive" type="web" virtual=tempVirtualDir password=this.settings.password
-				file="#dirs.tmpRA#/resource/context/railo-context.ra"
-				secure=true
-				append=false remoteClients="";
+			admin action="createArchive" type="web" password=this.settings.password virtual=tempVirtualDir
+				file="#dirs.tmpRA#/resource/context/railo-context.ra";
 
 
-			copyResources( "#dirs.admin#/admin",     "#dirs.tmpRA#/resource/context/admin" );
-			
-			copyResources( "#dirs.admin#/templates", "#dirs.tmpRA#/resource/context/templates" );
+			var fnFilterExcDotPrefix = function( name, type ) { return left( name, 1 ) != '.'; };
+
+			dirCopy( "#dirs.admin#/admin",     "#dirs.tmpRA#/resource/context/admin", fnFilterExcDotPrefix );
+			dirCopy( "#dirs.admin#/templates", "#dirs.tmpRA#/resource/context/templates", fnFilterExcDotPrefix );
 			
 			_echo( "Built railo-context.ra to <b>#dirs.tmpRA#/railo-context.ra</b>" );
-			
+
+
 		} catch ( any ex ) {
 		
 			_echo( "<b class='error'>Failed</b> #ex.message#" );
@@ -597,7 +600,8 @@ component {
 	}
 
 
-
+	// TODO: replace railo.build.util.BuildUtils.copyDirectoryTree() with dirCopy()
+	
 	/** copies directories recursively */
 	function copyResources( string src, string dst, string excludeSuffixes='' ) {
 

@@ -9,9 +9,12 @@ import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 
 
 /**
+ * @deprecated - now implemented in CFC as JdtCompiler.cfc
+ * 
  * this class is a wrapper around org.eclipse.jdt.core.compiler.batch.BatchCompiler to simplify interaction with CFML
  * see http://help.eclipse.org/indigo/index.jsp?topic=%2Forg.eclipse.jdt.doc.user%2Ftasks%2Ftask-using_batch_compiler.htm
  */
+@Deprecated
 public class JdtJavaCompiler {
 	
 	
