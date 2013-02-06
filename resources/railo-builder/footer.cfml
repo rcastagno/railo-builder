@@ -3,7 +3,9 @@
 		<cfoutput>
 
 			<div style="margin:2.5em 1.25em;">
-				<p><a href="/">Build</a> &middot; <a href="/compare.cfm">Compare</a>
+				<p><a href="/">Build</a> 
+					&middot; <a href="/compare.cfm">Compare</a>
+					&middot; <a href="/hash.cfm">MD5</a>
 
 				<p>Railo #Server.railo.version# running in #Server.servlet.name# from #getDirectoryFromPath( CGI.CF_TEMPLATE_PATH )#</div>
 			
