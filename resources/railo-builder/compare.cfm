@@ -11,7 +11,7 @@
 		<cfparam name="archive1" default="">
 		<cfparam name="archive2" default="">
 
-		<cfset obj = new cfc.ZipDiff()>
+		<cfset utils = new cfc.BuilderUtils()>
 
 		<cftry>
 
@@ -29,7 +29,7 @@
 			<p>This might take some time for large archives... Please wait...
 			<cfflush>
 
-			<cfset qCompare = obj.compare( archive1, archive2 )>
+			<cfset qCompare = utils.CompareArchives( archive1, archive2 )>
 
 			<cfquery name="qDiff" dbtype="query">
 				

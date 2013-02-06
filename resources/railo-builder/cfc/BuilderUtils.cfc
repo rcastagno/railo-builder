@@ -1,13 +1,96 @@
 component {
 
 
-	function init() {
+	java = {
 
-		return this;
+		  PrintWriter	: createObject( 'java', 'java.io.PrintWriter' )
+		, StringWriter	: createObject( 'java', 'java.io.StringWriter' )
+
+		, BatchCompiler	: createObject( 'java', 'org.eclipse.jdt.core.compiler.batch.BatchCompiler' )
+	};
+
+
+
+	/**
+	 * calls the BatchCompiler.compile() methods with the passed args
+	 * 
+	 * @param commandLine - the commandLine that is passed to the BatchCompiler
+	 */
+	function CompileCommand( commandLine ) {
+	
+		var out = java.StringWriter.init();
+		
+		var outWriter = java.PrintWriter.init( out, true );
+		
+		outWriter.println( "Compiler Command: " & commandLine );
+		
+
+		java.BatchCompiler.compile( commandLine, outWriter, outWriter, javaCast( 'null', '' ) );
+
+		
+		outWriter.println( "Done." );
+		
+		var result = out.getBuffer().toString().trim();
+		
+		return result;
+	}
+	
+	
+	/**
+	 * calls the BatchCompiler.compile() methods with the passed args
+	 * 
+	 * @param srcDirectory - the directory with the source .java files 
+	 * @param dstDirectory - the directory to save the .class files to
+	 * @param compilerArgs - args that will be passed to the BatchCompiler, e.g. "-nowarn -1.6"
+	 */
+	function Compile( String srcDirectory, String dstDirectory, String compilerArgs ) {
+		
+		var commandLine = "#compilerArgs# -d #dstDirectory# #srcDirectory#";
+		
+		return CompileCommand( commandLine );
+	}
+
+
+
+	/** 
+	* performs a recursive copy and allows to use a UDF as a filter that determines whether a file/dir 
+	* should be copied or not.
+	* 
+	* it returns an array of strings, one for each file that was copied.
+	* 
+	* @srcDir - full path of source dir
+	* @dstDir - full path of destination dir
+	* @filter - a function with the following signature: boolean function( name, type ); type can be 'dir' or 'file'
+	* @arrLog - used as reference object when calling recursively. do not pass a value.
+	*/
+	function dirCopy( required srcDir, required dstDir, filter="", arrLog=[] ) {
+
+		var qContents = directoryList( srcDir, false, "query", "", "type desc, name" );		// breadth first
+
+		if ( !directoryExists( dstDir ) ) 
+			directoryCreate( dstDir, true );
+
+		loop query=qContents {
+
+			if ( isSimpleValue( filter ) || filter( name, type ) ) {
+
+				if ( type == 'file' ) {
+
+					fileCopy( srcDir & '/' & name, dstDir & '/' & name );
+
+					arrLog.append( "copied #srcDir#/#name# to #dstDir#/#name#" );
+				} else if ( type == 'dir' ) {
+
+					dirCopy( srcDir & '/' & name, dstDir & '/' & name, filter, arrLog );	// recurse
+				}
+			}
+		}
+
+		return arrLog;
 	}
 
 	
-	function Compare( required String archive1, required String archive2 ) {
+	function CompareArchives( required String archive1, required String archive2 ) {
 	
 		try {
 		
@@ -25,8 +108,8 @@ component {
 			throw( "FileException", "Failed to open archive [#archive2#]. Make sure that the file exists and that it is a valid ZIP archive." );
 		}
 		
-		var arc1 = convertQueryToStructArray( Local.qContents1, 'name' );
-		var arc2 = convertQueryToStructArray( Local.qContents2, 'name' );
+		var arc1 = convertQueryToStruct( Local.qContents1, 'name' );
+		var arc2 = convertQueryToStruct( Local.qContents2, 'name' );
 
 		var arrFiles1 = structKeyArray( arc1 );
 		var arrFiles2 = structKeyArray( arc2 );
@@ -129,9 +212,9 @@ component {
 
 
 	/**
-	 * converts a Query Row (default row number is 1) to a Struct
+	 * converts a Query to a Struct of Structs
 	 **/
-	function convertQueryToStructArray( required Query query, required String key ) {
+	function convertQueryToStruct( required Query query, required String key ) {
 
 		var result	= {};
 

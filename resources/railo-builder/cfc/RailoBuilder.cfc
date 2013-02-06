@@ -3,31 +3,43 @@ component {
 
 	this.settings	= {
 
-		  buildType 	= 'primary'
-		, compilerType	= 'railo.build.util.JdtJavaCompiler'
-		, compilerArgs	= '-1.6 -nowarn'
-		, password		= 'server'
+		  buildType 	: 'primary'
+//		, compilerType	: 'railo.build.util.JdtJavaCompiler'
+		, compilerArgs	: '-1.6 -nowarn'
+		, password		: 'server'
 
-		, dstDir		= ''
-		, srcDir		= ''
-		, resDir 		= ''
+		, dstDir		: ''
+		, srcDir		: ''
+		, resDir 		: ''
 
-		, jreVersion	= 'jre-1.6.0_39'
+		, jreVersion	: 'jre-1.6.0_39'
 
-		, isDebug 		= true
+		, isDebug 		: true
 	}
 
 
 	this.buildTypes	= {
 
-		  patch		=  1
-		, primary	=  3
-		, jar		=  7
-		, war		= 15
-		, express	= 31
-		, installer	= 63
-		, all		= 63
+		  patch			:  1
+		, primary		:  3
+		, jar			:  7
+		, war			: 15
+		, express		: 31
+		, installer		: 63
+		, all			: 63
 	};
+
+
+	dirCopyFilters = {
+
+		  ExcDotPrefix  : function( name, type ) { return left( name, 1 ) != '.'; }
+		, ExcJavaSource : function( name, type ) { 
+			if ( left( name, 1 ) == '.' ) return false; 
+			if ( type == 'dir' ) return true; 
+			return ( right( name, 5 ) != ".java" && right( name, 3 ) != ".rc" );
+		}
+	};
+
 
 	
 	public function init( settings={} ) {
@@ -105,7 +117,8 @@ component {
 		}
 
 //		javaCompiler = createObject( 'java', this.settings.compilerType );
-		javaCompiler = new JdtCompiler();
+//		javaCompiler = new JdtCompiler();
+		utils = new BuilderUtils();
 
 		if ( this.settings.compilerArgs NCT "-extdirs" )
 			this.settings.compilerArgs &= ' -extdirs "#dirs.lib##server.separator.path##expandPath( "/WEB-INF/railo/lib/compile" )#"';
@@ -229,10 +242,12 @@ component {
 			
 			// copy railo-core/src to temp directory and build there so that we don't "dirty" the src folder
 			
-			copyResources( dirs.core, dirs.tmpCoreSrc );
+//			copyResources( dirs.core, dirs.tmpCoreSrc );
+			utils.dirCopy( dirs.core, dirs.tmpCoreSrc, dirCopyFilters.ExcDotPrefix )
 			
 			
-			var compileLog = javaCompiler.Compile( dirs.tmpCoreSrc, dirs.tmpCoreBin, this.settings.compilerArgs & " -sourcepath #dirs.loader#[-d none]" );
+//			var compileLog = javaCompiler.Compile( dirs.tmpCoreSrc, dirs.tmpCoreBin, this.settings.compilerArgs & " -sourcepath #dirs.loader#[-d none]" );
+			var compileLog = utils.Compile( dirs.tmpCoreSrc, dirs.tmpCoreBin, this.settings.compilerArgs & " -sourcepath #dirs.loader#[-d none]" );
 			
 			if ( find( "ERROR", compileLog ) || find( "java.lang.NullPointerException", compileLog ) ) {
 
@@ -480,7 +495,8 @@ component {
 		
 			_echo( "Compile Railo Loader..." );
 			
-			var compileLog = javaCompiler.Compile( dirs.loader, dirs.tmpLoadBin, this.settings.compilerArgs );
+//			var compileLog = javaCompiler.Compile( dirs.loader, dirs.tmpLoadBin, this.settings.compilerArgs );
+			var compileLog = utils.Compile( dirs.loader, dirs.tmpLoadBin, this.settings.compilerArgs );
 
 			if ( find( "ERROR", compileLog ) || find( "java.lang.NullPointerException", compileLog ) ) {
 
@@ -540,10 +556,8 @@ component {
 				file="#dirs.tmpRA#/resource/context/railo-context.ra";
 
 
-			var fnFilterExcDotPrefix = function( name, type ) { return left( name, 1 ) != '.'; };
-
-			dirCopy( "#dirs.admin#/admin",     "#dirs.tmpRA#/resource/context/admin", fnFilterExcDotPrefix );
-			dirCopy( "#dirs.admin#/templates", "#dirs.tmpRA#/resource/context/templates", fnFilterExcDotPrefix );
+			utils.dirCopy( "#dirs.admin#/admin",     "#dirs.tmpRA#/resource/context/admin",     dirCopyFilters.ExcDotPrefix );
+			utils.dirCopy( "#dirs.admin#/templates", "#dirs.tmpRA#/resource/context/templates", dirCopyFilters.ExcDotPrefix );
 			
 			_echo( "Built railo-context.ra to <b>#dirs.tmpRA#/railo-context.ra</b>" );
 
@@ -562,59 +576,21 @@ component {
 
 
 
-	/** 
-	* performs a recursive copy and allows to use a UDF as a filter that determines whether a file/dir 
-	* should be copied or not.
-	* 
-	* it returns an array of strings, one for each file that was copied.
-	* 
-	* @srcDir - full path of source dir
-	* @dstDir - full path of destination dir
-	* @filter - a function with the following signature: boolean function( name, type ); type can be 'dir' or 'file'
-	* @arrLog - used as reference object when calling recursively. do not pass a value.
-	*/
-	function dirCopy( required srcDir, required dstDir, filter="", arrLog=[] ) {
+	// TODO: replace railo.build.util.BuildUtils.copyDirectoryTree() with utils.dirCopy()
 
-		var qContents = directoryList( srcDir, false, "query", "", "type desc, name" );		// breadth first
-
-		if ( !directoryExists( dstDir ) ) 
-			directoryCreate( dstDir, true );
-
-		loop query=qContents {
-
-			if ( isSimpleValue( filter ) || filter( name, type ) ) {
-
-				if ( type == 'file' ) {
-
-					fileCopy( srcDir & '/' & name, dstDir & '/' & name );
-
-					arrLog.append( "copied #srcDir#/#name# to #dstDir#/#name#" );
-				} else if ( type == 'dir' ) {
-
-					dirCopy( srcDir & '/' & name, dstDir & '/' & name, filter, arrLog );	// recurse
-				}
-			}
-		}
-
-		return arrLog;
-	}
-
-
-	// TODO: replace railo.build.util.BuildUtils.copyDirectoryTree() with dirCopy()
-	
 	/** copies directories recursively */
 	function copyResources( string src, string dst, string excludeSuffixes='' ) {
 
 		_echo( "Copy #toDisplayDir( src )# to #toDisplayDir( dst )#" );
 		
-		var utils	= createObject( 'java', 'railo.build.util.BuildUtils' );
+		var jutils	= createObject( 'java', 'railo.build.util.BuildUtils' );
 
-		var filter 	= utils.createPrefixResourceFilter( ".*", true );			// exclude anything that starts with a dot, e.g. .svn
+		var filter 	= jutils.createPrefixResourceFilter( ".*", true );			// exclude anything that starts with a dot, e.g. .svn
 
 		if ( len( excludeSuffixes ) )
-			filter 	= utils.createSuffixResourceFilter( excludeSuffixes, true, filter );
+			filter 	= jutils.createSuffixResourceFilter( excludeSuffixes, true, filter );
 		
-		utils.copyDirectoryTree( src, dst, filter );
+		jutils.copyDirectoryTree( src, dst, filter );
 	}
 	
 
