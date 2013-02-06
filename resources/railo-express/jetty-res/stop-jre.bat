@@ -1,4 +1,4 @@
 
 
 
-"jre/bin/java" -DSTOP.PORT=8887 -DSTOP.KEY=railo -jar start.jar --stop
+"jre/bin/java" -Dstop.port=8887 -Dstop.key=railo -jar start.jar --stop
