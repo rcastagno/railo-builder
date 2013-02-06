@@ -89,6 +89,34 @@ component {
 		return arrLog;
 	}
 
+
+	function CalcFileHash( required String filename, boolean createFile=false, String algorithm="md5", boolean isBinary=true ) {
+
+		var contents = 0;
+
+		try {
+
+			if ( isBinary ) {
+
+				contents = fileReadBinary( filename );
+			} else {
+
+				contents = fileRead( filename );
+			}
+
+			var result = hash( contents, algorithm );
+
+			if ( createFile )
+				fileWrite( filename & '.' & lcase( algorithm ), result );
+
+			return result;
+
+		} catch ( ex ) {
+
+			return ex.message;
+		}
+	}
+
 	
 	function CompareArchives( required String archive1, required String archive2 ) {
 	

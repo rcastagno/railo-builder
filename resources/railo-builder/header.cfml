@@ -7,6 +7,9 @@
 
 		<style>
 			body, td	{ margin: 0; padding: 0; background-color: #222; color: #DDD; font-family: arial, sans-serif; font-size: 10.5pt; line-height: 1.5; }
+
+			td { padding: 0.5em; }
+
 			fieldset	{ width: 640px; margin: 1em auto 0.25em auto; border-radius: 5px; }
 			fieldset legend { padding: 0.5em 1em; }
 			form		{ padding: 0; margin: 0; }
