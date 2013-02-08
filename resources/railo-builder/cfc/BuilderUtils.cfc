@@ -63,7 +63,7 @@ component {
 	* @filter - a function with the following signature: boolean function( name, type ); type can be 'dir' or 'file'
 	* @arrLog - used as reference object when calling recursively. do not pass a value.
 	*/
-	function dirCopy( required srcDir, required dstDir, filter="", arrLog=[] ) {
+	function DirCopy( required srcDir, required dstDir, filter="", arrLog=[] ) {
 
 		var qContents = directoryList( srcDir, false, "query", "", "type desc, name" );		// breadth first
 
@@ -81,7 +81,7 @@ component {
 					arrLog.append( "copied #srcDir#/#name# to #dstDir#/#name#" );
 				} else if ( type == 'dir' ) {
 
-					dirCopy( srcDir & '/' & name, dstDir & '/' & name, filter, arrLog );	// recurse
+					DirCopy( srcDir & '/' & name, dstDir & '/' & name, filter, arrLog );	// recurse
 				}
 			}
 		}
@@ -116,6 +116,34 @@ component {
 			return ex.message;
 		}
 	}
+	
+
+	/** extracts the version number from Info.ini file */
+	function ExtractVersionInfo( string path ) {
+
+		var result = {};
+
+		try {
+		
+			var props = listToArray( fileRead( path ), chr(10) );
+
+			for ( var line in props ) {
+
+				if ( listLen( line, '=' ) == 2 ) {
+
+					var key = replace( trim( listFirst( line, '=' ) ), '-', '', 'all' );
+					var val = trim( listLast( line, '=' ) );
+
+					result[ key ] = val;
+				}
+			}
+		} catch ( any ex ) {
+
+			rethrow;
+		}
+
+		return result;
+	}
 
 	
 	function CompareArchives( required String archive1, required String archive2 ) {
@@ -136,8 +164,8 @@ component {
 			throw( "FileException", "Failed to open archive [#archive2#]. Make sure that the file exists and that it is a valid ZIP archive." );
 		}
 		
-		var arc1 = convertQueryToStruct( Local.qContents1, 'name' );
-		var arc2 = convertQueryToStruct( Local.qContents2, 'name' );
+		var arc1 = ConvertQueryToStruct( Local.qContents1, 'name' );
+		var arc2 = ConvertQueryToStruct( Local.qContents2, 'name' );
 
 		var arrFiles1 = structKeyArray( arc1 );
 		var arrFiles2 = structKeyArray( arc2 );
@@ -215,7 +243,22 @@ component {
 		var result = query;
 		
 		return result;
-	}	
+	}
+
+
+	/** reads the contents of a file, performs a replace on it, and saves the file */
+	function ReplaceInFile( string path, string find, string repl ) {
+
+		var curFile = fileRead( path );
+
+		var updFile = replaceNoCase( curFile, find, repl, 'all' );
+
+		if ( updFile != curFile ) {
+
+			fileWrite( path, updFile );
+		}
+	}
+
 	
 
 	/* TODO: add support for Directory; need to resolve CRC?
@@ -242,7 +285,7 @@ component {
 	/**
 	 * converts a Query to a Struct of Structs
 	 **/
-	function convertQueryToStruct( required Query query, required String key ) {
+	function ConvertQueryToStruct( required Query query, required String key ) {
 
 		var result	= {};
 

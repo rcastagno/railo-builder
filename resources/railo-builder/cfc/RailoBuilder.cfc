@@ -40,6 +40,7 @@ component {
 		}
 	};
 
+	utils = new BuilderUtils();
 
 	
 	public function init( settings={} ) {
@@ -118,7 +119,7 @@ component {
 
 //		javaCompiler = createObject( 'java', this.settings.compilerType );
 //		javaCompiler = new JdtCompiler();
-		utils = new BuilderUtils();
+//		utils = new BuilderUtils();
 
 		if ( this.settings.compilerArgs NCT "-extdirs" )
 			this.settings.compilerArgs &= ' -extdirs "#dirs.lib##server.separator.path##expandPath( "/WEB-INF/railo/lib/compile" )#"';
@@ -145,7 +146,8 @@ component {
 		if ( javaVersionMaj != "1.6" )
 			_echo( "<b class='error'>Building Railo requires Java 1.6</b> - You might experience errors with version #javaVersionMaj#" );
 
-		this.versionInfo= extractVersion( dirs.core & "/railo/runtime/Info.ini" );
+
+		this.versionInfo= utils.ExtractVersionInfo( dirs.core & "/railo/runtime/Info.ini" );
 		
 
 		if ( !isDefined( "this.versionInfo.number" ) || !len( this.versionInfo.number ) )
@@ -243,7 +245,7 @@ component {
 			// copy railo-core/src to temp directory and build there so that we don't "dirty" the src folder
 			
 //			copyResources( dirs.core, dirs.tmpCoreSrc );
-			utils.dirCopy( dirs.core, dirs.tmpCoreSrc, dirCopyFilters.ExcDotPrefix )
+			utils.DirCopy( dirs.core, dirs.tmpCoreSrc, dirCopyFilters.ExcDotPrefix )
 			
 			
 //			var compileLog = javaCompiler.Compile( dirs.tmpCoreSrc, dirs.tmpCoreBin, this.settings.compilerArgs & " -sourcepath #dirs.loader#[-d none]" );
@@ -311,7 +313,7 @@ component {
 
 		copyResources( dirs.tmpJar, tmpExpressDir & '/lib/ext' );
 
-		replaceInFile( tmpExpressDir & '/conf/web.xml', '<!-- {web-servlet-definitions.xml} !-->', this.webXmlDefs );
+		utils.replaceInFile( tmpExpressDir & '/conf/web.xml', '<!-- {web-servlet-definitions.xml} !-->', this.webXmlDefs );
 
 		compress( "zip", tmpExpressDir, '#dirs.dst#/#expressName#.zip' );
 
@@ -343,9 +345,7 @@ component {
 
 		copyResources( dirs.tmpJar, tmpExpressDir & '/lib/ext' );
 
-
-		replaceInFile( tmpExpressDir & '/etc/webdefault.xml', '<!-- {web-servlet-definitions.xml} !-->', this.webXmlDefs );
-
+		utils.replaceInFile( tmpExpressDir & '/etc/webdefault.xml', '<!-- {web-servlet-definitions.xml} !-->', this.webXmlDefs );
 
 		compress( "zip", tmpExpressDir, '#dirs.dst#/#expressName#.zip' );
 			
@@ -354,8 +354,6 @@ component {
 		compress( "tgz", tmpExpressDir, '#dirs.dst#/#expressName#.tar.gz' );
 		
 		_echo( "Built Express distro at <b>#dirs.dst#/#expressName#.tar.gz</b>" );
-
-		
 		_echo( "Continue to build Railo-Express with JREs" );
 
 
@@ -416,7 +414,7 @@ component {
 			
 			copyResources( dirs.rsrcWar, dirs.tmpWar );
 
-			replaceInFile( dirs.tmpWar & '/WEB-INF/web.xml', '<!-- {web-servlet-definitions.xml} !-->', this.webXmlDefs );
+			utils.replaceInFile( dirs.tmpWar & '/WEB-INF/web.xml', '<!-- {web-servlet-definitions.xml} !-->', this.webXmlDefs );
 
 			copyResources( dirs.resources & '/railo-world', dirs.tmpWar & '/' );
 
@@ -461,7 +459,7 @@ component {
 
 			fileCopy( dirs.resources & '/License.txt', dirs.tmpJar & '/License.txt' );
 
-			replaceInFile( dirs.tmpJar & '/web.xml.sample', '<!-- {web-servlet-definitions.xml} !-->', this.webXmlDefs );
+			utils.replaceInFile( dirs.tmpJar & '/web.xml.sample', '<!-- {web-servlet-definitions.xml} !-->', this.webXmlDefs );
 			
 			fileCopy( paths.primary, "#dirs.tmpJar#/railo.jar" );
 			
@@ -556,8 +554,8 @@ component {
 				file="#dirs.tmpRA#/resource/context/railo-context.ra";
 
 
-			utils.dirCopy( "#dirs.admin#/admin",     "#dirs.tmpRA#/resource/context/admin",     dirCopyFilters.ExcDotPrefix );
-			utils.dirCopy( "#dirs.admin#/templates", "#dirs.tmpRA#/resource/context/templates", dirCopyFilters.ExcDotPrefix );
+			utils.DirCopy( "#dirs.admin#/admin",     "#dirs.tmpRA#/resource/context/admin",     dirCopyFilters.ExcDotPrefix );
+			utils.DirCopy( "#dirs.admin#/templates", "#dirs.tmpRA#/resource/context/templates", dirCopyFilters.ExcDotPrefix );
 			
 			_echo( "Built railo-context.ra to <b>#dirs.tmpRA#/railo-context.ra</b>" );
 
@@ -576,7 +574,7 @@ component {
 
 
 
-	// TODO: replace railo.build.util.BuildUtils.copyDirectoryTree() with utils.dirCopy()
+	// TODO: replace railo.build.util.BuildUtils.copyDirectoryTree() with utils.DirCopy()
 
 	/** copies directories recursively */
 	function copyResources( string src, string dst, string excludeSuffixes='' ) {
@@ -593,34 +591,6 @@ component {
 		jutils.copyDirectoryTree( src, dst, filter );
 	}
 	
-
-	/** extracts the version number from Info.ini file */
-	function extractVersion( string path ) {
-
-		var result = {};
-
-		try {
-		
-			var props = listToArray( fileRead( path ), chr(10) );
-
-			for ( var line in props ) {
-
-				if ( listLen( line, '=' ) == 2 ) {
-
-					var key = replace( trim( listFirst( line, '=' ) ), '-', '', 'all' );
-					var val = trim( listLast( line, '=' ) );
-
-					result[ key ] = val;
-				}
-			}
-		} catch ( any ex ) {
-
-			rethrow;
-		}
-
-		return result;
-	}
-
 
 	function populateValues( map, find, replace ) {
 
@@ -661,22 +631,6 @@ component {
 	function isBuildRequired( string buildName ) {
 
 		return this.buildType >= this.buildTypes[ buildName ];
-	}
-
-
-	/** reads the contents of a file, performs a replace on it, and saves the file */
-	function replaceInFile( string path, string find, string repl ) {
-
-		var curFile = fileRead( path );
-
-		var updFile = replaceNoCase( curFile, find, repl, 'all' );
-
-		if ( updFile != curFile ) {
-
-			fileWrite( path, updFile );
-
-			_echo( "patched file #path#" );
-		}
 	}
 
 
@@ -723,6 +677,7 @@ component {
 	function _echo( string ) {
 	
 		echo( "<p><span class='ts'>#listGetAt( now(), 2, "'" )#</span> #string#" );
+		echo( "<script>window.scrollTo( 0, 9999999 );</script>" );
 		flush;
 	}
 
