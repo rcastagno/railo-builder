@@ -5,7 +5,7 @@ current version: jetty-8.1.7.v20120910
 	removed
 - contexts-available/
 - contexts/javadoc.xml      
-- contexts/test.d/override-web.xml      
+- contexts/test.d/
 - contexts/test.xml      
 - javadoc/
 

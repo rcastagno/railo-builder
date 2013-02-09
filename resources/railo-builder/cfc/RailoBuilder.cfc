@@ -11,6 +11,7 @@ component {
 		, srcDir		: ''
 		, resDir 		: ''
 
+		, jettyVersion	: 'jetty-8.1.9'
 		, jreVersion	: 'jre-1.6.0_39'
 
 		, isDebug 		: true
@@ -324,7 +325,7 @@ component {
 	/** builds Railo-Express a-la-Jetty */
 	function buildExpressJetty() {
 
-		var resourceJetty = dirs.rsrcExpress & '/jetty';
+		var resourceJetty = dirs.rsrcExpress & '/' & this.settings.jettyVersion;
 		var resourceScript= dirs.rsrcExpress & '/jetty-res';
 
 		var expressNameTemplate = replace( replace( paths.expressJ, '#dirs.dst#/', '' ), '.zip', '' );
