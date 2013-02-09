@@ -38,5 +38,6 @@
     p   { margin:0.35em; }
     p b { color:#3C3; }
     p b.error { color:#F66; }
+    p b.warning { color:#FF8C00; }
     span.ts { color:#ABC; margin-right:1em; }
 </style>

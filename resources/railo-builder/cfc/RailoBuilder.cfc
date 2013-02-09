@@ -545,6 +545,8 @@ component {
 	function compileAdmin() {
 	
 		_echo( "Compile Admin from #toDisplayDir( dirs.admin )#" );
+
+		_echo( "<b class='warning'>Attention: if Admin pages uses BIFs that were added after #Server.railo.version#</b> the compilation will go through but you will get runtime errors when accessing those pages!  Be sure to run the Builder in a Railo environment that contains all the code used by the Admin." );
 		
 		var tempVirtualDir = "/railo-context-compiled";
 
