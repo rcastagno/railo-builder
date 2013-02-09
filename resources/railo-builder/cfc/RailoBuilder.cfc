@@ -577,26 +577,8 @@ component {
 		return true;
 	}
 
-
-
-	// TODO: replace railo.build.util.BuildUtils.copyDirectoryTree() with utils.DirCopy()
-
-	/** copies directories recursively * /
-	function copyResources( string src, string dst, string excludeSuffixes='' ) {
-
-		_echo( "Copy #toDisplayDir( src )# to #toDisplayDir( dst )#" );
-		
-		var jutils	= createObject( 'java', 'railo.build.util.BuildUtils' );
-
-		var filter 	= jutils.createPrefixResourceFilter( ".*", true );			// exclude anything that starts with a dot, e.g. .svn
-
-		if ( len( excludeSuffixes ) )
-			filter 	= jutils.createSuffixResourceFilter( excludeSuffixes, true, filter );
-		
-		jutils.copyDirectoryTree( src, dst, filter );
-	}	//*/
 	
-
+	/** performs a find/replace in struct values */
 	function populateValues( map, find, replace ) {
 
 		for ( var key in map ) {				// fix version
@@ -607,6 +589,7 @@ component {
 	}
 
 
+	/** returns the latest instaelled patch file from #dirs.server#/patches */
 	function getLastInstalledPatch() {
 
 		directory directory=dirs.server & '/patches' name="Local.qDir" filter="*.rc";
@@ -682,7 +665,7 @@ component {
 	function _echo( string ) {
 	
 		echo( "<p><span class='ts'>#listGetAt( now(), 2, "'" )#</span> #string#" );
-		echo( "<script>window.scrollTo( 0, 9999999 );</script>" );
+		echo( "<script>window.scrollBy( 0, 9999 );</script>" );
 		flush;
 	}
 
@@ -696,10 +679,6 @@ component {
 			, resDirValid: false
 			, messsage: "" 
 		};
-
-		/*/
-		if ( ( len( srcDir ) GT 1 ) && ( "/\" CT right( srcDir, 1 ) ) )
-			srcDir = left( srcDir, len( srcDir ) - 1 );		//*/
 
 		srcDir = fixDir( srcDir );
 
