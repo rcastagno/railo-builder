@@ -1,6 +1,6 @@
-steps I took to strip Jetty 8.1.7 for Railo Express build template	// Igal
+steps I took to strip Jetty 8 for Railo Express build template	// Igal
 
-current version: jetty-8.1.7.v20120910
+current version: jetty-8.1.9.v20130131
 
 	removed
 - contexts-available/
@@ -8,6 +8,7 @@ current version: jetty-8.1.7.v20120910
 - contexts/test.d/
 - contexts/test.xml      
 - javadoc/
+- webapps/*
 
 	added
 + contexts/railo.xml       
