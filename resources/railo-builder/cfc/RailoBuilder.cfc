@@ -335,6 +335,22 @@ component {
 		var tmpExpressDir = dirs.tmpExpress & '/' & expressName;
 
 		utils.DirCopy( resourceJetty, tmpExpressDir, dirCopyFilters.ExcDotPrefix );
+
+		for ( var dir in [ 'contexts-available', 'contexts', 'javadoc', 'webapps' ] ) {
+
+			deleteDirectory( tmpExpressDir & '/' & dir );
+		}
+
+		for ( var file in [ 'start', 'start.bat', 'start.ini', 'stop', 'stop.bat' ] ) {
+
+			fileCopy( resourceScript & '/' & file, tmpExpressDir & '/' & file );
+
+			_echo( "Copy file #toDisplayDir( resourceScript & '/' & file )# to #toDisplayDir( tmpExpressDir & '/' & file )#" );
+		}
+
+		utils.DirCopy( resourceScript & '/contexts', tmpExpressDir & '/contexts' );
+		utils.DirCopy( resourceScript & '/etc', tmpExpressDir & '/etc' );
+
 		utils.DirCopy( dirs.resources & '/railo-world', tmpExpressDir & '/webapps/railo', dirCopyFilters.ExcDotPrefix );
 		utils.DirCopy( dirs.tmpJar, tmpExpressDir & '/lib/ext', dirCopyFilters.ExcDotPrefix );
 
@@ -357,7 +373,7 @@ component {
 
 		tmpExpressDir = dirs.tmpExpress & '/' & expressName;
 
-		_echo( "Rename #tmpExpressOld# to #tmpExpressDir#");
+		_echo( "Rename #toDisplayDir( tmpExpressOld )# to #toDisplayDir( tmpExpressDir )#");
 
 		directoryRename( tmpExpressOld, tmpExpressDir );
 
@@ -384,7 +400,7 @@ component {
 
 			tmpExpressDir = dirs.tmpExpress & '/' & expressName;
 
-			_echo( "Rename #tmpExpressOld# to #tmpExpressDir#");
+			_echo( "Rename #toDisplayDir( tmpExpressOld )# to #toDisplayDir( tmpExpressDir )#");
 
 			directoryRename( tmpExpressOld, tmpExpressDir );		// rename dir so that we'll have a root dir with the correct name in the zip archive
 
@@ -547,7 +563,7 @@ component {
 	
 		_echo( "Compile Admin from #toDisplayDir( dirs.admin )#" );
 
-		_echo( "<b class='warning'>Attention: if Admin pages uses BIFs that were added after #Server.railo.version#</b> the compilation will go through but you will get runtime errors when accessing those pages!  Be sure to run the Builder in a Railo environment that contains all the code used by the Admin." );
+		_echo( "<b class='warning'>Attention: if Admin pages use BIFs that were added after #Server.railo.version#</b> the compilation will go through but you will get runtime errors when accessing those pages!  Be sure to run the Builder in a Railo environment that contains all the code used by the Admin." );
 		
 		var tempVirtualDir = "/railo-context-compiled";
 
@@ -606,15 +622,18 @@ component {
 	/** translates directory for display purposes */
 	function toDisplayDir( string dir ) {
 	
-		var result = dir;
+		dir = fixDir( dir );
 		
-		if ( result CT dirs.src )
-			result = replace( result, dirs.src, '{src}' );
+		if ( findNoCase( dirs.src, dir ) == 1 )
+			return replace( dir, dirs.src, '{src}' );
 		
-		if ( result CT dirs.dst )
-			result = replace( result, dirs.dst, '{dst}' );
+		if ( findNoCase( dirs.dst, dir ) == 1 )
+			return replace( dir, dirs.dst, '{dst}' );
+
+		if ( findNoCase( dirs.resources, dir ) == 1 )
+			return replace( dir, dirs.resources, '{res}' );
 			
-		return result;
+		return dir;
 	}
 
 
@@ -636,8 +655,11 @@ component {
 		
 			dir = replace( dir, '\', server.separator.file, 'all' );
 		}	//*/
+
+		if ( dir CT '\' )
+			dir = replace( dir, '\', '/', 'all' );
 	
-		if ( "/\" CT right( dir, 1 ) )
+		if ( right( dir, 1 ) == '/' )
 			return left( dir, len( dir ) - 1 );
 
 		return dir;
@@ -660,8 +682,12 @@ component {
 	/** deletes a folder if it exists */
 	function deleteDirectory( string path ) {
 	
-		if ( directoryExists( path ) )
+		if ( directoryExists( path ) ) {
+
+			_echo( "Deleting directory #toDisplayDir( path )#" );
+
 			directoryDelete( path, true );
+		}
 	}
 	
 	
