@@ -410,7 +410,7 @@ component {
 
 			var resJreArchive = dirs.rsrcJRE & '/#this.settings.jreVersion#-#lcase( jreDistro )#.zip';
 
-			_echo( "Exctacting #resJreArchive#" );					
+			_echo( "Extracting #toDisplayDir( resJreArchive )#" );					
 
 			zip action="unzip" file=resJreArchive destination="#tmpExpressJreDir#";		// extract jre to dist/jre
 
