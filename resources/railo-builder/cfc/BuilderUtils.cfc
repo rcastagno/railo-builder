@@ -139,7 +139,7 @@ component {
 			}
 		} catch ( any ex ) {
 
-			rethrow;
+			result.number = "";
 		}
 
 		return result;

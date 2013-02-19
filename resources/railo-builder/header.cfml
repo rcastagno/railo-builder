@@ -31,6 +31,8 @@
 			#logo		{ float: left; width: 150px; height: 100px; background: url(/res/images/id.png) no-repeat 20px 20px; }
 			.primaryButton { color: green; font-size: 15pt; padding: 0.25em 1em; }
 
+			#version-number	{ margin-left: 1em; color: #9C9; }
+
 			a 		{ color: yellow; }
 			.error	{ color: #FAA; margin: 2em; }
 

@@ -707,9 +707,10 @@ component {
 			  srcDirValid: false
 			, resDirValid: false
 			, messsage: "" 
+			, version: ""
 		};
 
-		srcDir = fixDir( srcDir );
+		var srcDir = fixDir( URL.srcDir );
 
 		result.srcDirValid = directoryExists( srcDir );
 
@@ -718,7 +719,14 @@ component {
 
 		if ( result.srcDirValid ) {
 
-			param name="resDir" default="";
+			var versionInfo = utils.ExtractVersionInfo( srcDir & "/railo-java/railo-core/src/railo/runtime/Info.ini" );
+			result.versionFile = srcDir & "/railo-java/railo-core/src/railo/runtime/Info.ini";
+
+			result.version = versionInfo.number;
+
+			param name="URL.resDir" default="";
+
+			var resDir = URL.resDir;
 
 			if ( !len( resDir ) )
 				resDir = srcDir & this.settings.resDir;

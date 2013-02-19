@@ -13,7 +13,7 @@
 
 			<div class="clearfix field">
 				<div class="label">Source Directory:</div>
-				<div><input type="text" id="srcDir" name="srcDir" value="#cookie.rb_srcDir#" class="path"></div>
+				<div><input type="text" id="srcDir" name="srcDir" value="#cookie.rb_srcDir#" class="path"> <span id="version-number"></span></div>
 				<div class="hint">directory that contains railo-cfml and railo-java source code folders</div>
 				<br/>
 				<div class="label">Destination Directory:</div>
@@ -87,6 +87,8 @@
 
 			$( '#srcDir' ).removeClass( 'invalid' ).addClass( 'valid' );
 
+			$( '#version-number' ).text( ' v' + validationResult.version );
+
 			if ( isResDirRequired ) {
 
 				$( '#resDir' ).removeClass( validationResult.resDirValid ? 'invalid' : 'valid' ).addClass( validationResult.resDirValid ? 'valid' : 'invalid' );
@@ -94,6 +96,8 @@
 		} else {
 
 			$( '#srcDir' ).removeClass( 'valid' ).addClass( 'invalid' );
+
+			$( '#version-number' ).text( '' );
 
 			if ( isResDirRequired )
 				$( '#resDir' ).removeClass( 'valid' ).addClass( 'invalid' );
