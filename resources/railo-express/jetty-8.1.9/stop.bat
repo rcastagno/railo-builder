@@ -1,4 +1,4 @@
 
 
 
-java -Dstop.port=8887 -Dstop.key=railo -jar start.jar --stop
+java -jar start.jar --stop
