@@ -98,6 +98,7 @@ component {
 		paths = {
 
 			  core 		= dirs.dst & "/{version}.rc"
+			, notes		= dirs.dst & "/{version}.txt"
 			, primary 	= dirs.dst & "/railo.jar"
 			, jarDistro = dirs.dst & "/railo-{version}-jars.zip"
 			, warDistro = dirs.dst & "/railo-{version}.war"
@@ -117,13 +118,8 @@ component {
 			}
 		}
 
-//		javaCompiler = createObject( 'java', this.settings.compilerType );
-//		javaCompiler = new JdtCompiler();
-//		utils = new BuilderUtils();
-
 		if ( this.settings.compilerArgs NCT "-extdirs" )
 			this.settings.compilerArgs &= ' -extdirs "#dirs.lib##server.separator.path##expandPath( "/WEB-INF/railo/lib/compile" )#"';
-		
 		
 		return this;
 	}
@@ -242,12 +238,9 @@ component {
 		
 			_echo( "Compile Railo Core..." );
 			
-			// copy railo-core/src to temp directory and build there so that we don't "dirty" the src folder
-			
+			// copy railo-core/src to temp directory and build there so that we don't "dirty" the src folder			
 			utils.DirCopy( dirs.core, dirs.tmpCoreSrc, dirCopyFilters.ExcDotPrefix );
-			
-			
-//			var compileLog = javaCompiler.Compile( dirs.tmpCoreSrc, dirs.tmpCoreBin, this.settings.compilerArgs & " -sourcepath #dirs.loader#[-d none]" );
+
 			var compileLog = utils.Compile( dirs.tmpCoreSrc, dirs.tmpCoreBin, this.settings.compilerArgs & " -sourcepath #dirs.loader#[-d none]" );
 			
 			if ( find( "ERROR", compileLog ) || find( "java.lang.NullPointerException", compileLog ) ) {
@@ -262,7 +255,6 @@ component {
 			
 			_echo( "Copy resources from #toDisplayDir( dirs.core )#" );
 			
-//			copyResources( dirs.core, dirs.tmpCoreBin, '*.java,*.rc' );
 			utils.DirCopy( dirs.core, dirs.tmpCoreBin, dirCopyFilters.ExcJavaSource );
 
 			if ( !excludeRa ) {
@@ -278,6 +270,20 @@ component {
 			var fileInfo = getFileInfo( paths.core );
 			
 			_echo( "Built core.rc to <b>#paths.core#</b> (#numberFormat( fileInfo.size / 1048576, '9.99' )#mb)" );
+
+			_echo( "Retrieving release notes from JIRA for version #this.version#" );
+
+			var releaseNotes = utils.GetVersionReleaseNotes( this.version );
+
+			if ( len( releaseNotes ) ) {
+
+				fileWrite( paths.notes, releaseNotes );
+
+				_echo( "Created release notes at #paths.notes#" );
+			} else {
+
+				_echo( "Failed to retrieve release notes from JIRA for version #this.version#" );
+			}
 
 		} catch ( ex ) {
 		

@@ -259,6 +259,91 @@ component {
 		}
 	}
 
+
+	/** returns version information from JIRA */
+	function GetVersionInfoFromJira( string version="" ) {
+
+		var empty = { id: 0, name: "", released: false, self: "" };
+
+		try {
+
+			http url="https://issues.jboss.org/rest/api/2/project/RAILO/versions" result="Local.http";
+
+			var arr = deserializeJSON( http.fileContent );
+
+			var result = {};
+
+			for ( var ai in arr ) {
+
+				var v = ai.name CT '(' ? listGetAt( ai.name, 2, "()" ) : ai.name;
+
+				if ( len( arguments.version ) && v == arguments.version )
+					return ai;
+
+				result[ v ] = ai;
+			}
+
+			if ( len( arguments.version ) )
+				return empty;
+
+			return result;
+
+		} catch( ex ) {
+
+			return empty;
+		}
+	}
+
+
+	/** retruns the Release Notes from JIRA
+	* @version - the Railo version, e.g. 4.0.3.005
+	*/
+	function GetVersionReleaseNotes( string version ) {
+
+		var urlTemplate = "https://issues.jboss.org/secure/ReleaseNote.jspa?version={version-id}&styleName=Text&projectId=12310683";
+
+		var versionInfo = GetVersionInfoFromJira( version );
+
+		if ( versionInfo.id ) {
+
+			try {
+
+				http url=replace( urlTemplate, "{version-id}", versionInfo.id ) result="Local.http";
+
+				var raw = http.fileContent;
+
+				var pos = find( "</textarea>", raw );
+
+				raw = left( raw, pos - 1 );
+
+				pos = find( "<textarea", raw );
+
+				raw = mid( raw, pos );
+
+				pos = find( ">", raw );
+
+				raw = trim( mid( raw, pos + 1 ) );
+
+				var arr = [];
+
+				loop list=raw delimiters="#chr(13)##chr(10)#" index="Local.li" {
+
+					pos = find( "[RAILO-", li );
+
+					if ( pos )
+						arr.append( trim( mid( li, pos ) ) );
+				}
+
+				var result = arrayToList( arr, "#chr(13)##chr(10)#" );
+
+				return result;
+			} catch ( ex ) {
+
+				rethrow;
+			}
+		}
+	}
+
 	
 
 	/* TODO: add support for Directory; need to resolve CRC?
