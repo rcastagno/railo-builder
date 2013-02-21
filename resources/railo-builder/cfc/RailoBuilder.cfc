@@ -12,7 +12,7 @@ component {
 		, resDir 		: ''
 
 		, jettyVersion	: 'jetty-8.1.9'
-		, jreVersion	: 'jre-1.6.0_39'
+		, jreVersion	: 'jre-1.6.0_41'
 
 		, isDebug 		: true
 	}
