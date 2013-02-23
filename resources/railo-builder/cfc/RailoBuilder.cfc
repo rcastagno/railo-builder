@@ -12,7 +12,7 @@ component {
 		, resDir 		: ''
 
 		, jettyVersion	: 'jetty-8.1.9'
-		, jreVersion	: 'jre-1.6.0_41'
+		, jreVersion	: 'jre-1.7.0_15'
 
 		, isDebug 		: true
 	}
@@ -97,8 +97,8 @@ component {
 
 		paths = {
 
-			  core 		= dirs.dst & "/{version}.rc"
-			, notes		= dirs.dst & "/{version}.txt"
+			  core 		= dirs.dst & "/{version}/{version}.rc"
+			, notes		= dirs.dst & "/{version}/{version}.txt"
 			, primary 	= dirs.dst & "/railo.jar"
 			, jarDistro = dirs.dst & "/railo-{version}-jars.zip"
 			, warDistro = dirs.dst & "/railo-{version}.war"
@@ -264,6 +264,8 @@ component {
 
 
 			_echo( "Package #toDisplayDir( dirs.tmpCoreBin )#" );
+
+			directoryCreate( getDirectoryFromPath( paths.core ) );
 			
 			zip action="zip" file=paths.core source=dirs.tmpCoreBin;
 

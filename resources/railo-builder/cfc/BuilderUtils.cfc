@@ -295,7 +295,9 @@ component {
 	}
 
 
-	/** retruns the Release Notes from JIRA
+	/** 
+	* retruns the Release Notes from JIRA
+	* 
 	* @version - the Railo version, e.g. 4.0.3.005
 	*/
 	function GetVersionReleaseNotes( string version ) {
@@ -342,6 +344,8 @@ component {
 				rethrow;
 			}
 		}
+
+		return "";
 	}
 
 	
