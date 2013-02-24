@@ -33,6 +33,8 @@ color: #bbbbbb;
 #table-admin th { font-size: 0.9em; }
 #table-admin td { padding: 0.25em 1em; }
 
+.r99f { white-space: nowrap; }	/* dump label */
+
 /* @end GLOBALS
 -------------------------------- */
 /* @group LAYOUT
