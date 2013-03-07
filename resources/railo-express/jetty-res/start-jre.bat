@@ -1,4 +1,4 @@
 
 
 
-"jre/bin/java" -Xms256M -Xmx1024M -jar start.jar
+"jre/bin/java" -DSTOP.PORT=8887 -DSTOP.KEY=railo -Xms256M -Xmx1024M -jar start.jar
