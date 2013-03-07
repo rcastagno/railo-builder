@@ -13,6 +13,7 @@ component {
 
 		, jettyVersion	: 'jetty-8.1.9'
 		, jreVersion	: 'jre-1.7.0_15'
+//		, jreVersion	: 'jre-1.6.0_41'
 
 		, isDebug 		: true
 	}
@@ -314,7 +315,7 @@ component {
 
 		utils.DirCopy( resourceTomcat, tmpExpressDir, dirCopyFilters.ExcDotPrefix );
 
-		utils.DirCopy( dirs.resources & '/railo-world', tmpExpressDir & '/webapps/railo', dirCopyFilters.ExcDotPrefix );
+		utils.DirCopy( dirs.resources & '/railo-world', tmpExpressDir & '/webapps/www', dirCopyFilters.ExcDotPrefix );
 
 		utils.DirCopy( dirs.tmpJar, tmpExpressDir & '/lib/ext', dirCopyFilters.ExcDotPrefix );
 
@@ -349,7 +350,7 @@ component {
 			deleteDirectory( tmpExpressDir & '/' & dir );
 		}
 
-		for ( var file in [ 'start', 'start.bat', 'start.ini', 'stop', 'stop.bat' ] ) {
+		for ( var file in [ 'start', 'start.bat', 'start.ini', 'stop', 'stop.bat', '_-Railo-Getting-Started-_.html' ] ) {
 
 			fileCopy( resourceScript & '/' & file, tmpExpressDir & '/' & file );
 
@@ -359,7 +360,7 @@ component {
 		utils.DirCopy( resourceScript & '/contexts', tmpExpressDir & '/contexts' );
 		utils.DirCopy( resourceScript & '/etc', tmpExpressDir & '/etc' );
 
-		utils.DirCopy( dirs.resources & '/railo-world', tmpExpressDir & '/webapps/railo', dirCopyFilters.ExcDotPrefix );
+		utils.DirCopy( dirs.resources & '/railo-world', tmpExpressDir & '/webapps/www', dirCopyFilters.ExcDotPrefix );
 		utils.DirCopy( dirs.tmpJar, tmpExpressDir & '/lib/ext', dirCopyFilters.ExcDotPrefix );
 
 		utils.replaceInFile( tmpExpressDir & '/etc/webdefault.xml', '<!-- {web-servlet-definitions.xml} !-->', this.webXmlDefs );
@@ -391,6 +392,7 @@ component {
 
 		_echo( "Continue to build Railo-Express with JREs" );
 
+		/*
 		fileCopy( resourceScript & "/start-jre.bat", tmpExpressDir & "/start.bat" );
 		fileCopy( resourceScript & "/stop-jre.bat",  tmpExpressDir & "/stop.bat" );
 
@@ -400,9 +402,33 @@ component {
 
 		loop list="Linux32,Linux64,Win32,Win64" index="Local.jreDistro" {
 
+			var isWindows = ( left( jreDistro, 1 ) == 'W' );
+
 			expressName = replace( expressNameTemplate, '{jre}', 'jre-' & lcase( jreDistro ), 'all' );
 
 			_echo( "Building #expressName#..." );
+
+			var distroFullPath = '';
+
+			if ( isWindows ) {
+
+				distroFullPath = '#dirs.dst#/#expressName#.zip';
+
+				deleteFile( tmpExpressDir & "/start" );
+				deleteFile( tmpExpressDir & "/stop" );
+
+				fileCopy( resourceScript & "/start-jre.bat", tmpExpressDir & "/start.bat" );
+				fileCopy( resourceScript & "/stop-jre.bat",  tmpExpressDir & "/stop.bat" );
+			} else {
+
+				distroFullPath = '#dirs.dst#/#expressName#.tar.gz';
+
+				deleteFile( tmpExpressDir & "/start.bat" );
+				deleteFile( tmpExpressDir & "/stop.bat" );
+
+				fileCopy( resourceScript & "/start-jre",     tmpExpressDir & "/start" );
+				fileCopy( resourceScript & "/stop-jre",      tmpExpressDir & "/stop" );
+			}
 
 			tmpExpressOld = tmpExpressDir;
 
@@ -422,20 +448,18 @@ component {
 
 			zip action="unzip" file=resJreArchive destination="#tmpExpressJreDir#";		// extract jre to dist/jre
 
-			var distroFullPath = '#dirs.dst#/#expressName#.zip';	// compress distro
-
-			if ( left( jreDistro, 1 ) == 'W' ) {					// Windows distro
+			if ( isWindows ) {
 
 				compress( "zip", tmpExpressDir, distroFullPath );
-			} else {												// Linux distro
+			} else {
 
-				distroFullPath = '#dirs.dst#/#expressName#.tar.gz';
 				compress( "tgz", tmpExpressDir, distroFullPath );
 			}
 
 			_echo( "Built Express with JRE #jreDistro# distro at <b>#distroFullPath#</b>" );
 		
 		}
+		
 	}
 
 
@@ -698,6 +722,18 @@ component {
 		}
 	}
 	
+
+	/** deletes a file if it exists */
+	function deleteFile( string path ) {
+
+		if ( fileExists( path ) ) {
+
+			_echo( "Deleting file #toDisplayDir( path )#" );
+
+			fileDelete( path );
+		}
+	}
+
 	
 	function _echo( string ) {
 	
