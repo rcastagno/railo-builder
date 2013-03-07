@@ -12,7 +12,7 @@ component {
 		, resDir 		: ''
 
 		, jettyVersion	: 'jetty-8.1.9'
-		, jreVersion	: 'jre-1.7.0_15'
+//		, jreVersion	: 'jre-1.7.0_15'
 //		, jreVersion	: 'jre-1.6.0_41'
 
 		, isDebug 		: true
@@ -266,6 +266,7 @@ component {
 
 			_echo( "Package #toDisplayDir( dirs.tmpCoreBin )#" );
 
+			deleteDirectory( getDirectoryFromPath( paths.core ) );
 			directoryCreate( getDirectoryFromPath( paths.core ) );
 			
 			zip action="zip" file=paths.core source=dirs.tmpCoreBin;
@@ -389,15 +390,13 @@ component {
 		compress( "zip", tmpExpressDir, '#dirs.dst#/#expressName#.zip' );
 		_echo( "Built Express distro at <b>#dirs.dst#/#expressName#.zip</b>" );
 
+		var arrJREs = directoryList( dirs.rsrcJRE, false, 'name', 'jre*.zip', 'name desc' );
 
-		_echo( "Continue to build Railo-Express with JREs" );
+		var jreVer = arrJREs[ 1 ];
 
-		/*
-		fileCopy( resourceScript & "/start-jre.bat", tmpExpressDir & "/start.bat" );
-		fileCopy( resourceScript & "/stop-jre.bat",  tmpExpressDir & "/stop.bat" );
+		jreVer = listGetAt( jreVer, ( left( jreVer, 4 ) == 'jre-' ? 2 : 1 ), '-' );
 
-		fileCopy( resourceScript & "/start-jre",     tmpExpressDir & "/start" );
-		fileCopy( resourceScript & "/stop-jre",      tmpExpressDir & "/stop" );		//*/
+		_echo( "Continue to build Railo-Express with JREs version #jreVer#" );
 
 
 		loop list="Linux32,Linux64,Win32,Win64" index="Local.jreDistro" {
@@ -442,7 +441,7 @@ component {
 
 			deleteDirectory( tmpExpressJreDir );					// delete jre if exists from previous iteration
 
-			var resJreArchive = dirs.rsrcJRE & '/#this.settings.jreVersion#-#lcase( jreDistro )#.zip';
+			var resJreArchive = dirs.rsrcJRE & '/#jreVer#-#lcase( jreDistro )#.zip';
 
 			_echo( "Extracting #toDisplayDir( resJreArchive )#" );					
 
