@@ -39,9 +39,12 @@
    					<div id="primary" class="content">
 	   					<div id="explanation">
 		   					<h2>Important Notes</h2>
-							<p>Thank you for choosing Railo as your CFML engine. If you have installed Railo on a public server, please make sure that your Server Administrator is protected and that you have set a strong password for the Web Administrator.
+							<p>Thank you for choosing Railo as your CFML engine. If you have installed Railo on a public server, please be sure to secure the Server and Web Administrators with strong passwords and whatever means you deem necessary.
 							
 							<p>If you are new to Railo, please check the <a href="http://www.getrailo.org/go.cfm/quick-start-guide" target="_blank">Getting Started</a> guide on our page on how to begin. In our Wiki you will find a lot of useful information and documentation.
+
+							<p>If you want to start running some code in this Railo instance, simply place it in the website's folder at:
+							<div style="border: 1px solid ##999; border-radius: 5px; margin: 1em; padding: 1em; font-family: monospace;">#getDirectoryFromPath( expandPath( '/' ) )#</div>
 						</div>
 
 	   					<h2>System Information</h2>

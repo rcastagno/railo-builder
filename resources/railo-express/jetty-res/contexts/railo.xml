@@ -16,7 +16,7 @@ detected.
 
 
 
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <!-- Optional context configuration                                  -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   <Set name="extractWAR">false</Set>
@@ -28,8 +28,7 @@ detected.
   <!--  + war OR resourceBase                                          -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <Set name="contextPath">/</Set>
-  <!--Set name="resourceBase"><SystemProperty name="jetty.home" default="."/>/webroot/</Set!-->
-  <Set name="resourceBase"><SystemProperty name="jetty.home" default="."/>/webapps/railo/</Set>
+  <Set name="resourceBase"><SystemProperty name="jetty.home" default="."/>/webapps/www/</Set>
   
   <!-- <Set name="war"><SystemProperty name="jetty.home" default="."/>/webapps/test.war</Set> -->
 

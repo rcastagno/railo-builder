@@ -25,12 +25,12 @@
 
 body {
 	font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
-	color: #333;
+	color: #222;
 	}
 
 p, ul, ol, blockquote {
 	margin-bottom: 1.0em;
-	line-height: 1.3;
+	line-height: 1.25;
 	}
 
 blockquote, q { padding: 0 4em; quotes: none; }
