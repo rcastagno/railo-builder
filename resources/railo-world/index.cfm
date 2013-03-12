@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	    <title>Welcome to Railo <cfoutput>#left(server.railo.version,3)#</cfoutput></title><link rel="stylesheet" href="/res/css/style.css" type="text/css" media="all"/>
+	    <title>Welcome to Railo <cfoutput>#left(server.railo.version,3)#</cfoutput></title><link rel="stylesheet" href="res/css/style.css" type="text/css" media="all"/>
 	</head>
     <body id="documentation" class="twoCol">
    	<div id="container" class="sysDocumentation">
@@ -63,14 +63,14 @@
 	   					<p>
 
 	   					<h2>Railo Administration</h2>
-						<p>The default Railo Server and Web Administrator pages are located in the virtual folders <a href="/railo-context/admin/server.cfm">/railo-context/admin/server.cfm</a> and <a href="/railo-context/admin/web.cfm">/railo-context/admin/web.cfm</a> respectively.
+						<p>The default Railo Server and Web Administrator pages are located in the virtual folders <a href="#CGI.CONTEXT_PATH#/railo-context/admin/server.cfm">/railo-context/admin/server.cfm</a> and <a href="#CGI.CONTEXT_PATH#/railo-context/admin/web.cfm">/railo-context/admin/web.cfm</a> respectively.
 
 						<p>In the case of the Web Administrator, the host determines the Web context, so for example, http://site1/railo-context/admin/web.cfm will administer site1, and http://site2/railo-context/admin/web.cfm will administer site2.
 
 						<table id="table-admin">
 							<tr><th>Admin Type</th><th>Virtual Folder</th><th>Settings File</th></tr>
-							<tr><td><a href="/railo-context/admin/server.cfm">Server</a></td><td>/railo-context/admin/server.cfm</td><td>{railo-server}/context/railo-server.xml</td></tr>
-							<tr><td><a href="/railo-context/admin/web.cfm">Web</a></td><td>/railo-context/admin/web.cfm</td><td>{railo-web}/railo-web.xml.cfm</td></tr>
+							<tr><td><a href="#CGI.CONTEXT_PATH#/railo-context/admin/server.cfm">Server</a></td><td>/railo-context/admin/server.cfm</td><td>{railo-server}/context/railo-server.xml</td></tr>
+							<tr><td><a href="#CGI.CONTEXT_PATH#/railo-context/admin/web.cfm">Web</a></td><td>/railo-context/admin/web.cfm</td><td>{railo-web}/railo-web.xml.cfm</td></tr>
 						</table>
 
 						<h2>Setup Tips</h2>
