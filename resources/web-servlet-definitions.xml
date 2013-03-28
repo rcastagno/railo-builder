@@ -18,7 +18,7 @@
     <!-- write permissions to that folder.  leave commented for defaults.    -->
     <!--
     <init-param>
-      <param-name>railo-server-root</param-name>
+      <param-name>railo-server-directory</param-name>
       <param-value>/var/Railo/config/server/</param-value>
       <description>Railo Server configuration directory (for Server-wide configurations, settings, and libraries)</description>
     </init-param>
