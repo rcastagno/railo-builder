@@ -6,6 +6,7 @@
 				<p><a href="/">Build</a> 
 					&middot; <a href="/compare.cfm">Compare</a>
 					&middot; <a href="/hash.cfm">MD5</a>
+					&middot; <a href="/railo-context/admin/server.cfm">Admin</a>
 
 				<p>Railo #Server.railo.version# running in #Server.servlet.name# from #getDirectoryFromPath( CGI.CF_TEMPLATE_PATH )#</div>
 			

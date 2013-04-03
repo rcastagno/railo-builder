@@ -747,10 +747,10 @@ component {
 
 		var result = { 
 
-			  srcDirValid: false
-			, resDirValid: false
-			, messsage: "" 
-			, version: ""
+			  'srcDirValid': false
+			, 'resDirValid': false
+			, 'messsage': "" 
+			, 'version': ""
 		};
 
 		var srcDir = fixDir( URL.srcDir );
