@@ -33,7 +33,8 @@
 
 			#version-number	{ margin-left: 1em; color: #9C9; }
 
-			a 		{ color: yellow; }
+			.util	{ margin:2.5em 1.25em; }
+			.util a { color: yellow; }
 			.error	{ color: #FAA; margin: 2em; }
 
 			.valid 		{ background-color: #99FF99; }

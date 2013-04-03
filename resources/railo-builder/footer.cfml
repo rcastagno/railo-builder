@@ -2,7 +2,7 @@
 
 		<cfoutput>
 
-			<div style="margin:2.5em 1.25em;">
+			<div class="util">
 				<p><a href="/">Build</a> 
 					&middot; <a href="/compare.cfm">Compare</a>
 					&middot; <a href="/hash.cfm">MD5</a>

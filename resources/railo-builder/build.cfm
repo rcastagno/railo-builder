@@ -6,7 +6,7 @@
 
 <cfoutput>
 
-	<form action="build-railo.cfm">
+	<form action="build-railo.cfm" method="post">
 	
 		<fieldset class="wrapper">
 			<legend>#pageTitle#</legend>
@@ -25,7 +25,7 @@
 			</div>
 			<div class="clearfix field">
 				<div class="label">Admin Password:</div>
-				<div><input type="text" name="password" value="#cookie.rb_password#"></div>
+				<div><input type="password" name="password" value="#cookie.rb_password#"></div>
 				<div class="hint">clear text password - for development environment only!</div>
 			</div>
 			<div class="clearfix field">

@@ -40,4 +40,7 @@
     p b.error { color:#F66; }
     p b.warning { color:#FF8C00; }
     span.ts { color:#ABC; margin-right:1em; }
+
+    .util   { margin:2.5em 1.25em; }
+    .util a { color: yellow; }
 </style>
