@@ -1,4 +1,4 @@
-<cfsetting requestTimeout="300">
+<cfsetting requestTimeout="600">
 
 
 <cfinclude template="build-railo.settings.cfml">    <!--- sets srcDir, dstDir, and compilerArgs --->
@@ -12,7 +12,6 @@
     , resDir        = resDir
     , password      = password
 
-    , compilerType  = compilerType
     , compilerArgs  = compilerArgs
 
     , buildType     = build
@@ -29,6 +28,12 @@
 <cfset cookie.rb_resDir     = resDir>
 <cfset cookie.rb_password   = password>
 
+
+<html>
+	<head>
+		<title>Build Railo</title>
+	</head>
+	<body class="console">
 
 <cfset railoBuilder.Build()>
 

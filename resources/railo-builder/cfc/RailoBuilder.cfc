@@ -4,7 +4,8 @@ component {
 	this.settings	= {
 
 		  buildType 	: 'primary'
-		, compilerArgs	: '-1.6 -nowarn'
+//		, compilerArgs	: '-1.6 -nowarn'
+		, compilerArgs	: '-nowarn'
 		, password		: 'server'
 
 		, dstDir		: ''
@@ -12,8 +13,6 @@ component {
 		, resDir 		: ''
 
 		, jettyVersion	: 'jetty-8.1.9'
-//		, jreVersion	: 'jre-1.7.0_15'
-//		, jreVersion	: 'jre-1.6.0_41'
 
 		, isDebug 		: true
 	}
@@ -59,23 +58,24 @@ component {
 
 		dirs = {
 
-			  src 		= this.settings.srcDir
-			, core		= this.settings.srcDir & "/railo-java/railo-core/src"
-			, lib		= this.settings.srcDir & "/railo-java/libs"
-			, loader	= this.settings.srcDir & "/railo-java/railo-loader/src"
-			, admin		= this.settings.srcDir & "/railo-cfml/railo-admin"
+			  src 		 = this.settings.srcDir
+			, railojava	 = this.settings.srcDir & "/railo-java"
+			, core		 = this.settings.srcDir & "/railo-java/railo-core/src"
+			, lib		 = this.settings.srcDir & "/railo-java/libs"
+			, loader	 = this.settings.srcDir & "/railo-java/railo-loader/src"
+			, railocfml	 = this.settings.srcDir & "/railo-cfml"
 
-			, dst 		= this.settings.dstDir
-			, tmpCoreSrc= this.settings.dstDir & "/__railo-core-src"
-			, tmpCoreBin= this.settings.dstDir & "/__railo-core-bin"
-			, tmpLoadBin= this.settings.dstDir & "/__railo-loader-bin"
-			, tmpRA		= this.settings.dstDir & "/__railo-context-ra"
-			, tmpJar	= this.settings.dstDir & "/__railo-jar-distro/railo-{version}-jars"
-			, tmpWar	= this.settings.dstDir & "/__railo-war-distro"
-			, tmpExpress= this.settings.dstDir & "/__railo-express-jetty"
+			, dst 		 = this.settings.dstDir
+			, tmpCoreSrc = this.settings.dstDir & "/__railo-core-src"
+			, tmpCoreBin = this.settings.dstDir & "/__railo-core-bin"
+			, tmpLoadBin = this.settings.dstDir & "/__railo-loader-bin"
+			, tmpRA		 = this.settings.dstDir & "/__railo-context-ra"
+			, tmpJar	 = this.settings.dstDir & "/__railo-jar-distro/railo-{version}-jars"
+			, tmpWar	 = this.settings.dstDir & "/__railo-war-distro"
+			, tmpExpress = this.settings.dstDir & "/__railo-express-jetty"
 			, tmpExpressT= this.settings.dstDir & "/__railo-express-tomcat"
 			
-			, server 	= getDirectoryFromPath( expandPath( '{railo-server}' ) )
+			, server 	 = getDirectoryFromPath( expandPath( '{railo-server}' ) )
 		};
 
 		if ( len( this.settings.resDir ) ) {
@@ -120,7 +120,7 @@ component {
 		}
 
 		if ( this.settings.compilerArgs NCT "-extdirs" )
-			this.settings.compilerArgs &= ' -extdirs "#dirs.lib##server.separator.path##expandPath( "/WEB-INF/railo/lib/compile" )#"';
+			this.settings.compilerArgs &= ' -extdirs "#dirs.lib##server.separator.path##replace( expandPath( "/WEB-INF/railo/lib/compile" ), '\', '/', 'all' )#"';
 		
 		return this;
 	}
@@ -258,6 +258,7 @@ component {
 			
 			utils.DirCopy( dirs.core, dirs.tmpCoreBin, dirCopyFilters.ExcJavaSource );
 
+
 			if ( !excludeRa ) {
 
 				utils.DirCopy( dirs.tmpRA, dirs.tmpCoreBin, dirCopyFilters.ExcDotPrefix );
@@ -390,9 +391,9 @@ component {
 		compress( "zip", tmpExpressDir, '#dirs.dst#/#expressName#.zip' );
 		_echo( "Built Express distro at <b>#dirs.dst#/#expressName#.zip</b>" );
 
-		var arrJREs = directoryList( dirs.rsrcJRE, false, 'name', 'jre*.zip', 'name desc' );
+		var arrJREs = directoryList( dirs.rsrcJRE, false, 'name', 'jre*.zip', 'name' );
 
-		var jreVer = arrJREs[ 1 ];
+		var jreVer = arrJREs[ arrJREs.len() ];
 
 		jreVer = listGetAt( jreVer, ( left( jreVer, 4 ) == 'jre-' ? 2 : 1 ), '-' );
 
@@ -592,28 +593,66 @@ component {
 	/** creates the railo-context.ra */
 	function compileAdmin() {
 	
-		_echo( "Compile Admin from #toDisplayDir( dirs.admin )#" );
+		var adminSource = dirs.railocfml & "/railo-admin";
+
+		_echo( "Compile Admin from #toDisplayDir( adminSource )#" );
 
 		_echo( "<b class='warning'>Attention: if Admin pages use BIFs that were added after #Server.railo.version#</b> the compilation will go through but you will get runtime errors when accessing those pages!  Be sure to run the Builder in a Railo environment that contains all the code used by the Admin." );
 		
 		var tempVirtualDir = "/railo-context-compiled";
 
+		var cfmlDirs = [  "/"
+			, "/admin/cdriver"
+			, "/admin/dbdriver", "/admin/dbdriver/types", "/admin/debug"
+			, "/admin/gdriver"
+			, "/admin/plugin", "/admin/plugin/Note", "/admin/plugin/DDNS" 
+			, "/admin/resources/language"
+			, "/gateway"
+			, "/templates/error" //, "/templates/display" 
+		];
+
+		for ( local.dir in cfmlDirs ) {
+
+			utils.DirCopy( "#adminSource##dir#", "#dirs.tmpRA#/resource/context#dir#", dirCopyFilters.ExcDotPrefix, false );
+		}
+
+
 		try {
-		
+			
 			admin action="updateMapping" type="web" password=this.settings.password virtual=tempVirtualDir
-				physical="#dirs.admin#"
+				physical="#adminSource#"
 				primary="physical" 
 				trusted=false
 				archive="";
 
 			admin action="createArchive" type="web" password=this.settings.password virtual=tempVirtualDir
-				file="#dirs.tmpRA#/resource/context/railo-context.ra";
+				file="#dirs.tmpRA#/resource/context/railo-context.ra"
+				addCFMLFiles=false
+				addNoneCFMLFiles=false
+				append=false;
 
+/*/
+			admin action="updateMapping" type="web" password=this.settings.password virtual=tempVirtualDir
+				physical="#adminSource#/doc"
+				primary="physical" 
+				trusted=false
+				archive="";
 
-			utils.DirCopy( "#dirs.admin#/admin",     "#dirs.tmpRA#/resource/context/admin",     dirCopyFilters.ExcDotPrefix );
-			utils.DirCopy( "#dirs.admin#/templates", "#dirs.tmpRA#/resource/context/templates", dirCopyFilters.ExcDotPrefix );
+			admin action="createArchive" type="web" password=this.settings.password virtual=tempVirtualDir
+				file="#dirs.tmpRA#/resource/context/railo-context.ra"
+				addNoneCFMLFiles=true
+				append=true;
+//*/
+
+			/*/
+			utils.DirCopy( "#adminSource#/admin",     "#dirs.tmpRA#/resource/context/admin",     dirCopyFilters.ExcDotPrefix );
+			utils.DirCopy( "#adminSource#/templates", "#dirs.tmpRA#/resource/context/templates", dirCopyFilters.ExcDotPrefix );
+			//*/
 			
-			_echo( "Built railo-context.ra to <b>#dirs.tmpRA#/railo-context.ra</b>" );
+
+			// files in dirs.tmpRA are copied to dirs.tmpCoreBin buildCore
+
+			_echo( "Built railo-context.ra at <b>#dirs.tmpRA#/railo-context.ra</b> from #adminSource#" );
 
 		} catch ( ex ) {
 		

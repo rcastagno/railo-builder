@@ -7,6 +7,8 @@ component {
 		, StringWriter	: createObject( 'java', 'java.io.StringWriter' )
 
 		, BatchCompiler	: createObject( 'java', 'org.eclipse.jdt.core.compiler.batch.BatchCompiler' )
+
+		, CompProgress 	: createObject( 'java', 'railo.build.DebugUtil' )
 	};
 
 
@@ -26,6 +28,7 @@ component {
 		
 
 		java.BatchCompiler.compile( commandLine, outWriter, outWriter, javaCast( 'null', '' ) );
+//		java.BatchCompiler.compile( commandLine, outWriter, outWriter, java.CompProgress.getCompilationProgress( outWriter ) );
 
 		
 		outWriter.println( "Done." );
@@ -45,6 +48,8 @@ component {
 	 */
 	function Compile( String srcDirectory, String dstDirectory, String compilerArgs ) {
 		
+	//	dump( var=compilerArgs );
+
 		var commandLine = "#compilerArgs# -d #dstDirectory# #srcDirectory#";
 		
 		return CompileCommand( commandLine );
@@ -63,12 +68,14 @@ component {
 	* @filter - a function with the following signature: boolean function( name, type ); type can be 'dir' or 'file'
 	* @arrLog - used as reference object when calling recursively. do not pass a value.
 	*/
-	function DirCopy( required srcDir, required dstDir, filter="", arrLog=[] ) {
+	function DirCopy( required srcDir, required dstDir, filter="", boolean recurse=true, arrLog=[] ) {
 
 		var qContents = directoryList( srcDir, false, "query", "", "type desc, name" );		// breadth first
 
-		if ( !directoryExists( dstDir ) ) 
-			directoryCreate( dstDir, true );
+		if ( "/\" NCT right( srcDir, 1 ) )		srcDir &= '/';
+		if ( "/\" NCT right( dstDir, 1 ) )		dstDir &= '/';
+
+		if ( !directoryExists( dstDir ) ) 		directoryCreate( dstDir, true );
 
 		loop query=qContents {
 
@@ -76,12 +83,15 @@ component {
 
 				if ( type == 'file' ) {
 
-					fileCopy( srcDir & '/' & name, dstDir & '/' & name );
+					var s = srcDir & name;
+					var d = dstDir & name;
 
-					arrLog.append( "copied #srcDir#/#name# to #dstDir#/#name#" );
-				} else if ( type == 'dir' ) {
+					fileCopy( s, d );
 
-					DirCopy( srcDir & '/' & name, dstDir & '/' & name, filter, arrLog );	// recurse
+					arrLog.append( "copied #s# to #d#" );
+				} else if ( recurse && ( type == 'dir' ) ) {
+
+					this.DirCopy( srcDir & name, dstDir & name, filter, recurse, arrLog );	// recurse
 				}
 			}
 		}

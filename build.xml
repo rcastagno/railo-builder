@@ -19,10 +19,10 @@
 			<fileset dir="lib"/>
 		</copy>
 		
-		<!--
+		<!-- !-->
 		<echo>building bin/*.class to railo-builder.jar</echo>
 		<jar destfile="${build.dir}/WEB-INF/railo/lib/railo-build.jar" basedir="bin" />
-		!-->
+		
 		
 		<echo>building zip archive</echo>
 		<zip destfile="${dist.war}" basedir="${build.dir}" />

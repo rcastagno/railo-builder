@@ -28,19 +28,28 @@
 
 <cfparam name="build"       default="patch">
 
-<cfparam name="compilerType" default="railo.build.util.JdtJavaCompiler">    <!--- args that are passed to the jdt compiler --->
-<cfparam name="compilerArgs" default="-1.6 -nowarn">                        <!--- args that are passed to the jdt compiler --->
+<!---cfparam name="compilerType" default="railo.build.util.JdtJavaCompiler">
+<cfparam name="compilerArgs" default="-1.6 -nowarn">                            < args that are passed to the jdt compiler --->
+<cfparam name="compilerArgs" default="-g -1.6 -nowarn">                         <!--- args that are passed to the jdt compiler --->
 
 
 
 <style> /** console look */
-    body{ font-family:monospace; background-color:black; color:white; } 
+    body{ font-family:monospace; } 
     p   { margin:0.35em; }
-    p b { color:#3C3; }
-    p b.error { color:#F66; }
-    p b.warning { color:#FF8C00; }
-    span.ts { color:#ABC; margin-right:1em; }
+    b { color:#3C3; }
+    b.error { color:#F66; }
+    b.warning { color:#FF8C00; }
+    .ts { color:#ABC; margin-right:1em; }
 
     .util   { margin:2.5em 1.25em; }
     .util a { color: yellow; }
+
+    body.console { background-color:black; color:white; } 
+    .console b { color:#3C3; }
+    .console b.error { color:#F66; }
+    .console b.warning { color:#FF8C00; }
+    .console .ts { color:#ABC; }
+
+    .console .util a { color: yellow; }
 </style>

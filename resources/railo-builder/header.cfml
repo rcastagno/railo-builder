@@ -41,7 +41,7 @@
 			.invalid 	{ background-color: #FF9999; }
 		</style>
 	</head>
-	<body>
+	<body class="console">
 
 		<cfoutput>
 
