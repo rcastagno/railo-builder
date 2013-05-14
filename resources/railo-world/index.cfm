@@ -43,7 +43,7 @@
 							
 							<p>If you are new to Railo, please check the <a href="http://www.getrailo.org/go.cfm/quick-start-guide" target="_blank">Getting Started</a> guide on our page on how to begin. In our Wiki you will find a lot of useful information and documentation.
 
-							<p>If you want to start running some code in this Railo instance, simply place it in the website's folder at:
+							<p>To start running some code in this Railo instance, place it in the website's folder at:
 							<div style="border: 1px solid ##999; border-radius: 5px; margin: 1em; padding: 1em; font-family: monospace;">#getDirectoryFromPath( expandPath( '/' ) )#</div>
 						</div>
 
@@ -73,6 +73,13 @@
 							<tr><td><a href="#CGI.CONTEXT_PATH#/railo-context/admin/web.cfm">Web</a></td><td>/railo-context/admin/web.cfm</td><td>{railo-web}/railo-web.xml.cfm</td></tr>
 						</table>
 
+						<h2>Tag and Function Reference</h2>
+						<ul>For a quick reference visit the following links: 
+							<li><a href="#CGI.CONTEXT_PATH#/railo-context/doc/tags.cfm">Tags</a>
+							<li><a href="#CGI.CONTEXT_PATH#/railo-context/doc/functions.cfm">Functions</a>
+							<li><a href="#CGI.CONTEXT_PATH#/railo-context/doc/objects.cfm">Member Methods</a>
+						</ul>
+						
 						<h2>Setup Tips</h2>
 						<p>If you have installed Railo Express, please check out our 
 						<a href="http://www.getrailo.org/go.cfm/Railo_Installation" target="_blank">installation guides</a> for other platforms and 
