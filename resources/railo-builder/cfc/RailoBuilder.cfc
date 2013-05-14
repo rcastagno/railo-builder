@@ -13,6 +13,7 @@ component {
 		, resDir 		: ''
 
 		, jettyVersion	: 'jetty-8.1.9'
+//		, jettyVersion	: 'jetty-9.0.2'		// jetty9 requires Java7
 
 		, isDebug 		: true
 	}
@@ -593,14 +594,12 @@ component {
 	/** creates the railo-context.ra */
 	function compileAdmin() {
 	
-		var adminSource = dirs.railocfml & "/railo-admin";
+		var adminSource = dirs.railocfml & "/railo-admin";		
 
 		_echo( "Compile Admin from #toDisplayDir( adminSource )#" );
 
 		_echo( "<b class='warning'>Attention: if Admin pages use BIFs that were added after #Server.railo.version#</b> the compilation will go through but you will get runtime errors when accessing those pages!  Be sure to run the Builder in a Railo environment that contains all the code used by the Admin." );
 		
-		var tempVirtualDir = "/railo-context-compiled";
-
 		var cfmlDirs = [  "/"
 			, "/admin/cdriver"
 			, "/admin/dbdriver", "/admin/dbdriver/types", "/admin/debug"
@@ -618,48 +617,39 @@ component {
 
 
 		try {
+
+			var raVirtualPath  = "/railo-context-compiled";
+			var raPhysicalPath = "#dirs.tmpRA#/resource/context/railo-context.ra";
 			
-			admin action="updateMapping" type="web" password=this.settings.password virtual=tempVirtualDir
-				physical="#adminSource#"
-				primary="physical" 
-				trusted=false
-				archive="";
+			admin action="updateMapping" type="web" password=this.settings.password 
+				virtual = raVirtualPath
+				physical= adminSource
+				primary = "physical" 
+				trusted = false
+				archive = "";
 
-			admin action="createArchive" type="web" password=this.settings.password virtual=tempVirtualDir
-				file="#dirs.tmpRA#/resource/context/railo-context.ra"
-				addCFMLFiles=false
-				addNoneCFMLFiles=false
-				append=false;
+			admin action="createArchive" type="web" password=this.settings.password 
+				virtual = raVirtualPath
+				file    = raPhysicalPath
+				addCFMLFiles    = false
+				addNonCFMLFiles = false
+				append  = false;
 
-/*/
-			admin action="updateMapping" type="web" password=this.settings.password virtual=tempVirtualDir
-				physical="#adminSource#/doc"
-				primary="physical" 
-				trusted=false
-				archive="";
-
-			admin action="createArchive" type="web" password=this.settings.password virtual=tempVirtualDir
-				file="#dirs.tmpRA#/resource/context/railo-context.ra"
-				addNoneCFMLFiles=true
-				append=true;
-//*/
-
-			/*/
-			utils.DirCopy( "#adminSource#/admin",     "#dirs.tmpRA#/resource/context/admin",     dirCopyFilters.ExcDotPrefix );
-			utils.DirCopy( "#adminSource#/templates", "#dirs.tmpRA#/resource/context/templates", dirCopyFilters.ExcDotPrefix );
-			//*/
+			// add static resources
+			zip action  = "zip" 
+				file    = raPhysicalPath
+				source  = adminSource & "/res" 
+				prefix  = "res";
 			
 
-			// files in dirs.tmpRA are copied to dirs.tmpCoreBin buildCore
-
-			_echo( "Built railo-context.ra at <b>#dirs.tmpRA#/railo-context.ra</b> from #adminSource#" );
+			_echo( "Built railo-context.ra at <b>#raPhysicalPath#</b> from #adminSource#" );
+			// files in dirs.tmpRA are copied to dirs.tmpCoreBin in buildCore()
 
 		} catch ( ex ) {
 		
 			_echo( "<b class='error'>Failed</b> #ex.message#" );
 			
 			result.error = ex;
-
 			rethrow;
 		}
 		
