@@ -1,4 +1,0 @@
-#!/bin/bash
-
-cd $(dirname $0)
-java -Xms256M -Xmx1024M -jar start.jar

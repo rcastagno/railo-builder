@@ -12,7 +12,7 @@ component {
 		, srcDir		: ''
 		, resDir 		: ''
 
-		, jettyVersion	: 'jetty-8.1.9'
+		, jettyVersion	: 'jetty-8.1.11'
 //		, jettyVersion	: 'jetty-9.0.2'		// jetty9 requires Java7
 
 		, isDebug 		: true
@@ -155,14 +155,12 @@ component {
 		this.version 	= this.versionInfo.number;
 
 		this.versionInfo.versionId 	= replace( this.version, '.', '', 'all' ) & ':' & parseDateTime( this.versionInfo.releaseDate ).getTime();
-
 		this.versionInfo.versionBig	= listFirst( this.version, '.' ) & '.' & listGetAt( this.version, 2, '.' );
 		
 
 		_echo( "Build #ucase( this.settings.buildType )#; version: <b>#this.version#</b>" );
 
-		populateValues( dirs, '{version}', this.version );
-		
+		populateValues( dirs,  '{version}', this.version );		
 		populateValues( paths, '{version}', this.version );
 
 
@@ -564,7 +562,6 @@ component {
 			
 			_echo( "Copy resources from #toDisplayDir( dirs.loader )#" );
 			
-//			copyResources( dirs.loader, dirs.tmpLoadBin, '*.java,*.rc' );
 			utils.DirCopy( dirs.loader, dirs.tmpLoadBin, dirCopyFilters.ExcJavaSource );
 			
 			_echo( "Copy core from #toDisplayDir( paths.core )# to #toDisplayDir( dirs.tmpLoadBin )#/core/core.rc" );
@@ -594,7 +591,7 @@ component {
 	/** creates the railo-context.ra */
 	function compileAdmin() {
 	
-		var adminSource = dirs.railocfml & "/railo-admin";		
+		var adminSource = dirs.railocfml & "/railo-admin";
 
 		_echo( "Compile Admin from #toDisplayDir( adminSource )#" );
 
@@ -706,15 +703,6 @@ component {
 
 	/** replaces all path separator to system path separator and ensures that last character is not a separator */
 	function fixDir( dir ) {
-
-		/*/
-		if ( server.separator.file == '\' && dir CT '/'	) {
-		
-			dir = replace( dir, '/', server.separator.file, 'all' );
-		} else if ( server.separator.file == '/' && dir CT '\'	) {
-		
-			dir = replace( dir, '\', server.separator.file, 'all' );
-		}	//*/
 
 		if ( dir CT '\' )
 			dir = replace( dir, '\', '/', 'all' );
