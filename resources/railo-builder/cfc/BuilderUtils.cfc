@@ -1,14 +1,18 @@
 component {
 
 
+	libs = directoryList( "../lib" ).toList();
+
+
 	java = {
 
-		  PrintWriter	: createObject( 'java', 'java.io.PrintWriter' )
+		  System        : createObject( 'java', 'java.lang.System' )
+		, PrintWriter	: createObject( 'java', 'java.io.PrintWriter' )
 		, StringWriter	: createObject( 'java', 'java.io.StringWriter' )
 
-		, BatchCompiler	: createObject( 'java', 'org.eclipse.jdt.core.compiler.batch.BatchCompiler' )
+		, BatchCompiler	: createObject( 'java', 'org.eclipse.jdt.core.compiler.batch.BatchCompiler', libs )
 
-		, CompProgress 	: createObject( 'java', 'railo.build.DebugUtil' )
+//		, CompProgress 	: createObject( 'java', 'railo.build.DebugUtil' )
 	};
 
 
@@ -155,6 +159,17 @@ component {
 		return result;
 	}
 
+
+	/** returns the latest instaelled patch file from #dirsServer#/patches */
+	function GetLastInstalledPatch( string dirServer ) {
+
+		directory directory=dirServer & '/patches' name="Local.qDir" filter="*.rc";
+
+		var result = replace( qDir.name[ qDir.recordCount ], '.rc', '' );
+
+		return result;
+	}
+
 	
 	function CompareArchives( required String archive1, required String archive2 ) {
 	
@@ -267,6 +282,12 @@ component {
 
 			fileWrite( path, updFile );
 		}
+	}
+
+
+	function GetSystemProperty( string key ) {
+
+		return java.System.getProperty( key );
 	}
 
 

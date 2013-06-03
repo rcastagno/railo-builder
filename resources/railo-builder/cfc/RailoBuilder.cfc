@@ -121,7 +121,7 @@ component {
 		}
 
 		if ( this.settings.compilerArgs NCT "-extdirs" )
-			this.settings.compilerArgs &= ' -extdirs "#dirs.lib##server.separator.path##replace( expandPath( "/WEB-INF/railo/lib/compile" ), '\', '/', 'all' )#"';
+			this.settings.compilerArgs &= ' -extdirs "#dirs.lib##server.separator.path##replace( expandPath( "../lib" ), '\', '/', 'all' )#"';
 		
 		return this;
 	}
@@ -131,12 +131,9 @@ component {
 
 		var t1 = getTickCount();
 
-		_echo( "src: #dirs.src#; dst: #dirs.dst#" );
-		_echo( "resources: #dirs.resources#" );
 
-		var system = createObject( 'java', 'java.lang.System' );
+		var javaVersion = utils.GetSystemProperty( 'java.version' );
 
-		var javaVersion = system.getProperty( 'java.version' );
 		var javaVersionMaj = listFirst( javaVersion, '.' ) & '.' & listGetAt( javaVersion, 2, '.' );
 
 		_echo( "Railo #server.railo.version# running in Java #javaVersion#" );
@@ -164,15 +161,20 @@ component {
 		populateValues( paths, '{version}', this.version );
 
 
+		_echo( "src: #dirs.src#" );
+		_echo( "dst: #dirs.dst#" );
+		_echo( "res: #dirs.resources#" );
+
+
 		deleteTempDirectories();				// delete temp folders if exist from previous run
 
 
-		var lastPatch = getLastInstalledPatch();
-
+		var lastPatch = utils.GetLastInstalledPatch( dirs.server );
+		/*/
 		if ( listLast( lastPatch, '.' ) == '999' ) {
 
 			_echo( "temporary patch exists at #dirs.server#/patches/#lastPatch#.rc" );
-		}
+		}	//*/
 
 
 		var isNewBuildRequiredForRA = false;
@@ -662,17 +664,6 @@ component {
 			if ( map[ key ] CT find )
 				map[ key ] = replace( map[ key ], find, replace, 'all' );
 		}
-	}
-
-
-	/** returns the latest instaelled patch file from #dirs.server#/patches */
-	function getLastInstalledPatch() {
-
-		directory directory=dirs.server & '/patches' name="Local.qDir" filter="*.rc";
-
-		var result = replace( qDir.name[ qDir.recordCount ], '.rc', '' );
-
-		return result;
 	}
 
 
